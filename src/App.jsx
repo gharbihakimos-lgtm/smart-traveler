@@ -198,26 +198,17 @@ function App() {
             <div key={i} style={{
               display: 'flex',
               justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              marginBottom: '0.75rem'
+              marginBottom: '1rem'
             }}>
-              <div style={{
-                background: msg.role === 'user' ? 'var(--primary)' : 'white',
-                color: msg.role === 'user' ? 'white' : 'var(--text-main)',
-                padding: '0.75rem 1rem',
-                borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                maxWidth: '80%',
-                fontSize: '0.95rem',
-                lineHeight: '1.5',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-              }}>
+              <div className={msg.role === 'user' ? 'chat-message-user' : 'chat-message-bot'}>
                 {msg.content}
               </div>
             </div>
           ))}
           {isThinking && (
-            <div style={{display: 'flex', justifyContent: 'flex-start', marginBottom: '0.75rem'}}>
-              <div style={{background: 'white', padding: '0.75rem 1.25rem', borderRadius: '16px 16px 16px 4px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', color: 'var(--text-muted)'}}>
-                ✍️ Réflexion en cours...
+            <div style={{display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem'}}>
+              <div className="chat-message-bot typing-indicator">
+                <span></span><span></span><span></span>
               </div>
             </div>
           )}
