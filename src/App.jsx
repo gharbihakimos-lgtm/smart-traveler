@@ -102,7 +102,7 @@ function App() {
     return `${p}€`;
   };
 
-  const updateData = (field, value) => {
+  const nextStep = () => {
     if (step < TOTAL_STEPS) setStep(step + 1);
     else submit();
   };
