@@ -21,10 +21,29 @@
     "foodScore": 4,
     "natureScore": 1,
     "sportScore": 3,
-    "constraints": ["parking", "breakfast", "Climatisation obligatoire", "Serviettes fournies", "Ménage quotidien", "Navette aéroport", "Accès PMR"],
-    "pros": ["Piscine avec grand bassin enfant", "Propreté impeccable", "Proche plage (300m)"],
-    "cons": ["Assez bruyant en soirée", "Chambres standards petites"],
-    "imageUrl": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
+    "constraints": [
+      "parking",
+      "breakfast",
+      "Climatisation obligatoire",
+      "Serviettes fournies",
+      "Ménage quotidien",
+      "Navette aéroport",
+      "Accès PMR"
+    ],
+    "pros": [
+      "Piscine avec grand bassin enfant",
+      "Propreté impeccable",
+      "Proche plage (300m)"
+    ],
+    "cons": [
+      "Assez bruyant en soirée",
+      "Chambres standards petites"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
+    ]
   },
   {
     "id": "c1",
@@ -34,7 +53,7 @@
     "region": "Nouvelle-Aquitaine",
     "country": "France",
     "distanceKm": 350,
-    "lat": 44.0,
+    "lat": 44,
     "lng": -1.2,
     "basePricePerNight": 110,
     "rating": 8.5,
@@ -48,10 +67,25 @@
     "foodScore": 2,
     "natureScore": 5,
     "sportScore": 5,
-    "constraints": ["parking", "Animaux acceptés", "Cuisine équipée"],
-    "pros": ["Parc aquatique géant", "Club enfant exceptionnel", "Esprit nature"],
-    "cons": ["Prendre la voiture pour la plage", "Pas de serviettes ni ménage"],
-    "imageUrl": "https://images.unsplash.com/photo-1533873984035-25970ab07461?w=800&q=80"
+    "constraints": [
+      "parking",
+      "Animaux acceptés",
+      "Cuisine équipée"
+    ],
+    "pros": [
+      "Parc aquatique géant",
+      "Club enfant exceptionnel",
+      "Esprit nature"
+    ],
+    "cons": [
+      "Prendre la voiture pour la plage",
+      "Pas de serviettes ni ménage"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1533873984035-25970ab07461?w=800&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
+    ]
   },
   {
     "id": "a1",
@@ -75,10 +109,26 @@
     "foodScore": 1,
     "natureScore": 3,
     "sportScore": 1,
-    "constraints": ["parking", "Climatisation obligatoire", "Serviettes fournies", "Cuisine équipée"],
-    "pros": ["Vue mer magnifique", "Calme absolu", "Très luxueux et spacieux"],
-    "cons": ["Budget plus élevé", "Pas d'animation pour enfants"],
-    "imageUrl": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80"
+    "constraints": [
+      "parking",
+      "Climatisation obligatoire",
+      "Serviettes fournies",
+      "Cuisine équipée"
+    ],
+    "pros": [
+      "Vue mer magnifique",
+      "Calme absolu",
+      "Très luxueux et spacieux"
+    ],
+    "cons": [
+      "Budget plus élevé",
+      "Pas d'animation pour enfants"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
+    ]
   },
   {
     "id": "v1",
@@ -89,9 +139,9 @@
     "country": "France",
     "distanceKm": 120,
     "lat": 48.2,
-    "lng": -3.0,
+    "lng": -3,
     "basePricePerNight": 140,
-    "rating": 8.0,
+    "rating": 8,
     "poolScore": 4,
     "beachScore": 4,
     "cleanScore": 3,
@@ -102,10 +152,26 @@
     "foodScore": 3,
     "natureScore": 4,
     "sportScore": 5,
-    "constraints": ["parking", "breakfast", "Serviettes fournies", "Borne de recharge électrique"],
-    "pros": ["Activités pour tous les âges", "Pension complète possible", "Accès direct plage"],
-    "cons": ["Bâtiments vieillissants", "Propreté parfois critiquée"],
-    "imageUrl": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80"
+    "constraints": [
+      "parking",
+      "breakfast",
+      "Serviettes fournies",
+      "Borne de recharge électrique"
+    ],
+    "pros": [
+      "Activités pour tous les âges",
+      "Pension complète possible",
+      "Accès direct plage"
+    ],
+    "cons": [
+      "Bâtiments vieillissants",
+      "Propreté parfois critiquée"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80"
+    ]
   },
   {
     "id": "h2",
@@ -129,10 +195,26 @@
     "foodScore": 5,
     "natureScore": 1,
     "sportScore": 1,
-    "constraints": ["breakfast", "Climatisation obligatoire", "Serviettes fournies", "Ménage quotidien", "Accès PMR"],
-    "pros": ["Idéal pour visiter", "Très calme sur cour"],
-    "cons": ["Pas de piscine ni plage", "Parking payant à proximité"],
-    "imageUrl": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80"
+    "constraints": [
+      "breakfast",
+      "Climatisation obligatoire",
+      "Serviettes fournies",
+      "Ménage quotidien",
+      "Accès PMR"
+    ],
+    "pros": [
+      "Idéal pour visiter",
+      "Très calme sur cour"
+    ],
+    "cons": [
+      "Pas de piscine ni plage",
+      "Parking payant à proximité"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80"
+    ]
   },
   {
     "id": "c2",
@@ -145,7 +227,7 @@
     "lat": 44.6,
     "lng": 4.4,
     "basePricePerNight": 80,
-    "rating": 9.0,
+    "rating": 9,
     "poolScore": 4,
     "beachScore": 1,
     "cleanScore": 5,
@@ -156,10 +238,25 @@
     "foodScore": 2,
     "natureScore": 5,
     "sportScore": 4,
-    "constraints": ["parking", "Animaux acceptés", "Cuisine équipée"],
-    "pros": ["Calme absolu", "Bord de rivière", "Logements insolites neufs"],
-    "cons": ["Pas de plage à proximité", "Peu d'animations en soirée"],
-    "imageUrl": "https://images.unsplash.com/photo-153756526675b-34dd68c18731?w=800&q=80"
+    "constraints": [
+      "parking",
+      "Animaux acceptés",
+      "Cuisine équipée"
+    ],
+    "pros": [
+      "Calme absolu",
+      "Bord de rivière",
+      "Logements insolites neufs"
+    ],
+    "cons": [
+      "Pas de plage à proximité",
+      "Peu d'animations en soirée"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-153756526675b-34dd68c18731?w=800&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
+    ]
   },
   {
     "id": "h3",
@@ -170,7 +267,7 @@
     "country": "Portugal",
     "distanceKm": 1600,
     "lat": 37.1,
-    "lng": -8.0,
+    "lng": -8,
     "basePricePerNight": 250,
     "rating": 9.8,
     "poolScore": 5,
@@ -183,10 +280,28 @@
     "foodScore": 5,
     "natureScore": 3,
     "sportScore": 4,
-    "constraints": ["parking", "breakfast", "Climatisation obligatoire", "Serviettes fournies", "Ménage quotidien", "Navette aéroport", "Borne de recharge électrique"],
-    "pros": ["Luxe absolu", "Piscine à débordement incroyable", "Service irréprochable"],
-    "cons": ["Très cher"],
-    "imageUrl": "https://images.unsplash.com/photo-1542314831-c6a4d142104d?w=800&q=80"
+    "constraints": [
+      "parking",
+      "breakfast",
+      "Climatisation obligatoire",
+      "Serviettes fournies",
+      "Ménage quotidien",
+      "Navette aéroport",
+      "Borne de recharge électrique"
+    ],
+    "pros": [
+      "Luxe absolu",
+      "Piscine à débordement incroyable",
+      "Service irréprochable"
+    ],
+    "cons": [
+      "Très cher"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1542314831-c6a4d142104d?w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
+    ]
   },
   {
     "id": "a2",
@@ -210,10 +325,25 @@
     "foodScore": 3,
     "natureScore": 1,
     "sportScore": 1,
-    "constraints": ["Serviettes fournies", "Climatisation obligatoire", "Cuisine équipée"],
-    "pros": ["Plein centre", "Refait à neuf", "Économique"],
-    "cons": ["Bruyant la nuit", "Pas de parking"],
-    "imageUrl": "https://images.unsplash.com/photo-1502672260266-1c1cd2cb9df4?w=800&q=80"
+    "constraints": [
+      "Serviettes fournies",
+      "Climatisation obligatoire",
+      "Cuisine équipée"
+    ],
+    "pros": [
+      "Plein centre",
+      "Refait à neuf",
+      "Économique"
+    ],
+    "cons": [
+      "Bruyant la nuit",
+      "Pas de parking"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1502672260266-1c1cd2cb9df4?w=800&q=80",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80"
+    ]
   },
   {
     "id": "h4",
@@ -237,10 +367,27 @@
     "foodScore": 3,
     "natureScore": 3,
     "sportScore": 3,
-    "constraints": ["parking", "breakfast", "Serviettes fournies", "Ménage quotidien", "Animaux acceptés"],
-    "pros": ["Accès direct plage", "Menu enfant", "Accueil chaleureux"],
-    "cons": ["Déco un peu vieillotte", "Petite piscine"],
-    "imageUrl": "https://images.unsplash.com/photo-1561501878-aabd62634533?w=800&q=80"
+    "constraints": [
+      "parking",
+      "breakfast",
+      "Serviettes fournies",
+      "Ménage quotidien",
+      "Animaux acceptés"
+    ],
+    "pros": [
+      "Accès direct plage",
+      "Menu enfant",
+      "Accueil chaleureux"
+    ],
+    "cons": [
+      "Déco un peu vieillotte",
+      "Petite piscine"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1561501878-aabd62634533?w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
+      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80"
+    ]
   },
   {
     "id": "c3",
@@ -264,9 +411,23 @@
     "foodScore": 2,
     "natureScore": 5,
     "sportScore": 4,
-    "constraints": ["parking", "Animaux acceptés", "Cuisine équipée"],
-    "pros": ["Au pied des dunes", "Grande piscine chauffée", "Emplacements ombragés"],
-    "cons": ["Réseau mobile faible"],
-    "imageUrl": "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800&q=80"
+    "constraints": [
+      "parking",
+      "Animaux acceptés",
+      "Cuisine équipée"
+    ],
+    "pros": [
+      "Au pied des dunes",
+      "Grande piscine chauffée",
+      "Emplacements ombragés"
+    ],
+    "cons": [
+      "Réseau mobile faible"
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800&q=80",
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
+    ]
   }
 ]

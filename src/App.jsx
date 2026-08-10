@@ -3,7 +3,7 @@ import {
   MapPin, Calendar, Users, Wallet, Heart, Settings2,
   CheckCircle, ArrowRight, ArrowLeft, Check, Palmtree, Map, ShieldCheck, ThumbsUp,
   Globe, Euro, Compass, MessageCircle, Send, Home,
-  Share2, Download, Sun, Moon
+  Share2, Download, Sun, Moon, CloudSun, DollarSign, PoundSterling, HeartPulse
 } from 'lucide-react';
 import { calculateScores } from './utils/scoring';
 import { signInWithGoogle, logOut } from './firebase';
@@ -12,6 +12,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import mockHotels from './data/hotels.json';
 import { t } from './i18n';
+import HotelCard from './components/HotelCard';
 
 // Fix for missing default markers in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -72,10 +73,36 @@ function App() {
     budget: 1000,
     stayType: ['hotel'],
     priorities: { pool: 5, beach: 4, clean: 5, kids: 3, quiet: 4, luxury: 2 },
-    constraints: ['parking', 'breakfast']
+    constraints: ['Climatisation obligatoire']
   });
 
-  const nextStep = () => {
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('smartstay-favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
+  useEffect(() => {
+    localStorage.setItem('smartstay-favorites', JSON.stringify(favorites));
+  }, [favorites]);
+  const toggleFavorite = (id) => setFavorites(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+
+  const [currency, setCurrency] = useState('EUR');
+  const [exchangeRate, setExchangeRate] = useState(1);
+  useEffect(() => {
+    if (currency === 'EUR') { setExchangeRate(1); return; }
+    fetch(`https://api.frankfurter.app/latest?from=EUR&to=${currency}`)
+      .then(res => res.json())
+      .then(d => setExchangeRate(d.rates[currency]))
+      .catch(() => setExchangeRate(1));
+  }, [currency]);
+  
+  const formatPrice = (priceInEur) => {
+    const p = Math.round(priceInEur * exchangeRate);
+    if (currency === 'USD') return `$${p}`;
+    if (currency === 'GBP') return `£${p}`;
+    return `${p}€`;
+  };
+
+  const updateData = (field, value) => {
     if (step < TOTAL_STEPS) setStep(step + 1);
     else submit();
   };
@@ -306,6 +333,22 @@ function App() {
 
         {data.destinationType === 'around_me' && (
           <div className="fade-in" style={{marginTop: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px'}}>
+            <div style={{textAlign: 'center', marginBottom: '1rem'}}>
+              <button className="btn fade-in" onClick={() => {
+                if (navigator.geolocation) {
+                  navigator.geolocation.getCurrentPosition((pos) => {
+                    alert(`Localisation OK ! Lat: ${pos.coords.latitude.toFixed(2)}, Lng: ${pos.coords.longitude.toFixed(2)}`);
+                    updateData('lat', pos.coords.latitude);
+                    updateData('lng', pos.coords.longitude);
+                    updateData('departure', 'Ma position');
+                  }, () => alert("Impossible d'obtenir votre position."));
+                } else {
+                  alert("Géolocalisation non supportée.");
+                }
+              }}>
+                <MapPin size={18} /> Me localiser
+              </button>
+            </div>
             <label className="form-label" style={{display:'flex', justifyContent:'space-between'}}>
               <span>Rayon de recherche max</span>
               <span style={{color: 'var(--primary)', fontWeight: 'bold'}}>{data.distanceMax} km</span>
@@ -632,103 +675,16 @@ function App() {
         </div>
         
         {topResults.map((res, index) => (
-          <div key={index} className="card fade-in" style={{maxWidth: '100%', padding: '0', overflow: 'hidden', marginBottom: '2rem'}}>
-            <div className="result-header" style={{
-              background: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)), url(${res.imageUrl || 'https://images.unsplash.com/photo-1542314831-c6a4d142104d'}) center/cover`, 
-              padding: '2rem',
-              minHeight: index === 0 ? '250px' : '200px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-end'
-            }}>
-              {index === 0 && (
-                <div style={{display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.5rem'}}>
-                  <span style={{fontWeight:600, color: '#fbbf24', textTransform:'uppercase', letterSpacing:'0.05em', fontSize: '0.85rem'}}>🏆 Recommandation #1</span>
-                </div>
-              )}
-              <h1 style={{color: 'white', fontSize: index === 0 ? '2rem' : '1.5rem', margin: '0'}}>{res.name}</h1>
-              <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', marginTop: '0.2rem'}}><MapPin size={18} style={{verticalAlign:'text-bottom'}}/> {res.location}</p>
-              
-              <div className="score-badge" style={{top: '1.5rem', right: '1.5rem', fontSize: index === 0 ? '1.25rem' : '1rem', background: 'rgba(0,0,0,0.5)', borderColor: 'rgba(255,255,255,0.2)'}}>
-                Score: <span style={{color: 'var(--success)'}}>{res.score}/100</span>
-              </div>
-            </div>
-            
-            <div className="result-card-body" style={{padding: '2rem'}}>
-              {res.warnings && res.warnings.length > 0 && (
-                <div className="fade-in" style={{background: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', borderLeft: '4px solid #dc2626'}}>
-                  <strong>⚠️ Ce choix ne respecte pas tous vos critères stricts :</strong>
-                  <ul style={{margin: '0.5rem 0 0 1.5rem', padding: 0}}>
-                    {res.warnings.map((w, i) => <li key={i}>{w}</li>)}
-                  </ul>
-                </div>
-              )}
-              
-              <div style={{display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem'}}>
-                <div style={{flex: '1 1 150px'}}>
-                  <h3 style={{color: 'var(--text-main)', marginBottom:'1rem'}}>💰 Prix estimé</h3>
-                  <div style={{fontSize: '2rem', fontWeight: 800, color: 'var(--primary)', lineHeight: 1}}>
-                    {res.totalPrice} € <span style={{fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 400}}>/{res.nights} nuits</span>
-                  </div>
-                  <p style={{fontSize: '0.85rem', marginTop: '0.5rem'}}>Trajet inclus depuis {data.departure}</p>
-                </div>
-                <div style={{flex: '2 1 300px'}}>
-                  <h3 style={{color: 'var(--text-main)', marginBottom:'1rem'}}><ThumbsUp size={20} style={{verticalAlign:'text-bottom', color:'var(--success)'}}/> Pourquoi ce choix ?</h3>
-                  <p style={{background: '#f8fafc', padding: '1rem', borderRadius: '12px', borderLeft: `4px solid ${index===0 ? 'var(--primary)' : '#64748b'}`}}>
-                    {res.why}
-                  </p>
-                </div>
-              </div>
-
-              <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: index === 0 ? '2rem' : '0'}}>
-                <div>
-                  <h4 style={{color: 'var(--success)', display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.5rem'}}><Check size={18}/> Points Forts</h4>
-                  <ul className="pro-con-list" style={{marginTop:0}}>
-                    {res.pros && res.pros.map((p, i) => <li key={i}><span style={{color:'var(--success)'}}>✓</span> {p}</li>)}
-                  </ul>
-                </div>
-                <div>
-                  <h4 style={{color: 'var(--warning)', display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.5rem'}}><ShieldCheck size={18}/> À prendre en compte</h4>
-                  <ul className="pro-con-list" style={{marginTop:0}}>
-                    {res.cons && res.cons.map((c, i) => <li key={i}><span style={{color:'var(--warning)'}}>!</span> {c}</li>)}
-                  </ul>
-                </div>
-              </div>
-              
-              <div style={{marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)'}}>
-                <p style={{textAlign: 'center', marginBottom: '1rem', fontWeight: 600, color: 'var(--text-main)'}}>{t('availabilities', lang)}</p>
-                <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem'}}>
-                  <a 
-                    href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(res.name + ' ' + res.location)}`} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="btn fade-in" 
-                    style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#003B95', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(0, 59, 149, 0.3)'}}
-                  >
-                    Booking.com
-                  </a>
-                  <a 
-                    href={`https://www.agoda.com/search?text=${encodeURIComponent(res.name + ' ' + res.location)}`} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="btn fade-in" 
-                    style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF567D', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 86, 125, 0.3)'}}
-                  >
-                    Agoda
-                  </a>
-                  <a 
-                    href={`https://www.google.com/search?q=${encodeURIComponent(res.name + ' ' + res.location + ' official site')}`} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="btn-secondary fade-in" 
-                    style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem'}}
-                  >
-                    {t('officialSite', lang)}
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <HotelCard 
+            key={res.id} 
+            res={res} 
+            index={index} 
+            isFavorite={favorites.includes(res.id)} 
+            toggleFavorite={toggleFavorite} 
+            formatPrice={formatPrice}
+            t={t}
+            lang={lang}
+          />
         ))}
 
         <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem', marginBottom: '3rem'}} className="no-print">
@@ -776,12 +732,18 @@ function App() {
         
         <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
           <div style={{display: 'flex', gap: '0.5rem', color: 'white'}}>
+            <button onClick={() => setCurrency(c => c === 'EUR' ? 'USD' : c === 'USD' ? 'GBP' : 'EUR')} style={{background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.5rem 0.75rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              {currency === 'EUR' ? <Euro size={18}/> : currency === 'USD' ? <DollarSign size={18}/> : <PoundSterling size={18}/>} {currency}
+            </button>
             <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')} style={{background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.5rem 0.75rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
               <Globe size={18} /> {lang.toUpperCase()}
             </button>
             <button onClick={() => setDarkMode(!darkMode)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.5rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center'}}>
               {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
             </button>
+            <div style={{background: 'rgba(255,255,255,0.2)', color: 'white', padding: '0.5rem 0.75rem', borderRadius: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <HeartPulse size={18} color="#ef4444" fill="#ef4444" /> {favorites.length}
+            </div>
           </div>
           
           {user ? (
