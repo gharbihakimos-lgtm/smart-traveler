@@ -91,7 +91,13 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
               {formatPrice(res.basePricePerNight)} <span style={{fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 'normal'}}>/ nuit</span>
             </div>
             {res.distanceKm && (
-              <p style={{color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem'}}>🚗 à {res.distanceKm} km</p>
+              <p style={{color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem'}}>
+                {res.distanceKm <= 3 ? '🚶‍♂️ À pied / 🚲 Vélo' : 
+                 res.distanceKm <= 50 ? '🚗 Voiture / 🚌 Bus' : 
+                 res.distanceKm <= 500 ? '🚗 Voiture / 🚆 Train' : 
+                 res.distanceKm <= 1500 ? '🚆 Train / ✈️ Avion' : 
+                 '✈️ Avion / ⛴️ Bateau'} à {res.distanceKm} km
+              </p>
             )}
           </div>
           <div>
