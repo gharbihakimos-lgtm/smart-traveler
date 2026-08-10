@@ -10,6 +10,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import mockHotels from './data/hotels.json';
+import { t } from './i18n';
 
 // Fix for missing default markers in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -22,11 +23,21 @@ L.Icon.Default.mergeOptions({
 const TOTAL_STEPS = 8;
 
 function App() {
-  const [step, setStep] = useState(0); // 0 is Intro
+  const [user, setUser] = useState(null);
+  const [step, setStep] = useState(0); 
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
-  const [user, setUser] = useState(null);
+  const [lang, setLang] = useState('fr');
+  const [darkMode, setDarkMode] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   const handleLogin = async () => {
     try {
@@ -698,9 +709,22 @@ function App() {
           </div>
         ))}
 
-        <div style={{textAlign: 'center', marginTop: '1rem', marginBottom: '3rem'}}>
-          <button className="btn-secondary" style={{padding: '0.75rem 2rem'}} onClick={() => {setResults(null); setStep(1);}}>
-            Refaire une recherche
+        <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem', marginTop: '1rem', marginBottom: '3rem'}} className="no-print">
+          <button className="btn-secondary" style={{padding: '0.75rem 1.5rem'}} onClick={() => {setResults(null); setStep(1);}}>
+            Nouvelle recherche
+          </button>
+          <button className="btn-secondary" style={{padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => window.print()}>
+            <Download size={18} /> PDF
+          </button>
+          <button className="btn" style={{padding: '0.75rem 1.5rem'}} onClick={() => {
+            if (navigator.share) {
+              navigator.share({ title: 'Mon voyage SmartStay', url: window.location.href })
+                .catch(() => {});
+            } else {
+              alert('Partage non supporté');
+            }
+          }}>
+            <Share2 size={18} /> Partager
           </button>
         </div>
       </div>
@@ -723,25 +747,29 @@ function App() {
 
   return (
     <div className="app-container">
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
-        <div style={{fontWeight: 'bold', color: 'var(--primary)', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-          <Compass size={24}/> SmartStay Premium
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', background: 'var(--primary)', color: 'white', borderRadius: '24px', width: '100%', marginBottom: '2rem', boxShadow: 'var(--soft-shadow)'}} className="no-print">
+        <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 700, fontSize: '1.25rem'}}>
+          <Compass size={24}/> {t('appTitle', lang)}
         </div>
         
         <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-          <div style={{display: 'flex', gap: '0.5rem', color: 'var(--text-muted)'}}>
-            <Globe size={20} style={{cursor: 'pointer'}} title="Changer de langue" onClick={() => alert('Langue: FR')} />
-            <Euro size={20} style={{cursor: 'pointer'}} title="Changer de devise" onClick={() => alert('Devise: EUR')} />
+          <div style={{display: 'flex', gap: '0.5rem', color: 'white'}}>
+            <button onClick={() => setLang(lang === 'fr' ? 'en' : 'fr')} style={{background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.5rem 0.75rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <Globe size={18} /> {lang.toUpperCase()}
+            </button>
+            <button onClick={() => setDarkMode(!darkMode)} style={{background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.5rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center'}}>
+              {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
+            </button>
           </div>
           
           {user ? (
-            <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1rem', borderLeft: '1px solid var(--border)', paddingLeft: '1rem'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1rem', borderLeft: '1px solid rgba(255,255,255,0.3)', paddingLeft: '1rem'}}>
               <span style={{fontWeight: 500}}>👋 {user.name}</span>
-              <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}} onClick={handleLogout}>Déconnexion</button>
+              <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem', color: 'var(--text-main)'}} onClick={handleLogout}>{t('logoutBtn', lang)}</button>
             </div>
           ) : (
-            <div style={{marginLeft: '1rem', borderLeft: '1px solid var(--border)', paddingLeft: '1rem'}}>
-              <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}} onClick={() => setShowLogin(true)}>Se connecter</button>
+            <div style={{marginLeft: '1rem', borderLeft: '1px solid rgba(255,255,255,0.3)', paddingLeft: '1rem'}}>
+              <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem', color: 'var(--text-main)'}} onClick={() => setShowLogin(true)}>{t('loginBtn', lang)}</button>
             </div>
           )}
         </div>

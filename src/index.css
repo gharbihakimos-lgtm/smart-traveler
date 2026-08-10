@@ -434,3 +434,84 @@ p {
   margin-bottom: 2rem;
   filter: drop-shadow(0 10px 15px rgba(20, 184, 166, 0.3));
 }
+
+/* --- DARK MODE (Dark Luxury) --- */
+body.dark {
+  --primary: #2dd4bf;
+  --primary-hover: #14b8a6;
+  --secondary: #38bdf8;
+  --bg-color: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --card-bg: #1e293b;
+  --border: #334155;
+  --soft-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(45, 212, 191, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.05) 0px, transparent 50%);
+}
+
+body.dark .chat-message-bot,
+body.dark .form-input,
+body.dark .radio-card,
+body.dark .counter-btn,
+body.dark .result-card-body {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+body.dark .chat-message-bot {
+  background: #1e293b;
+  border: 1px solid #334155;
+}
+
+body.dark .score-badge {
+  background: rgba(30, 41, 59, 0.95);
+  color: #f8fafc;
+}
+
+body.dark .btn-secondary {
+  background: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+body.dark .btn-secondary:hover {
+  background: #334155;
+}
+
+/* --- PDF PRINT STYLES --- */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  .app-container {
+    padding: 0;
+    max-width: 100%;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .card {
+    box-shadow: none;
+    border: none;
+    padding: 1rem;
+  }
+  .result-header {
+    background: white;
+    color: black;
+    border: 2px solid #e2e8f0;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  .score-badge {
+    position: static;
+    display: inline-block;
+    border: 1px solid black;
+    color: black;
+    background: white;
+    margin-top: 1rem;
+  }
+}
