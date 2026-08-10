@@ -51,7 +51,9 @@ export const translations = {
     pdfBtn: "Sauvegarder PDF",
     shareTitle: "Mon Top 3 Hôtels - SmartStay Premium",
     shareSuccess: "Lien partagé avec succès !",
-    shareError: "Impossible de partager sur cet appareil."
+    shareError: "Impossible de partager sur cet appareil.",
+    availabilities: "Voir les disponibilités :",
+    officialSite: "Site Officiel"
   },
   en: {
     appTitle: "SmartStay Premium",
@@ -105,7 +107,9 @@ export const translations = {
     pdfBtn: "Save PDF",
     shareTitle: "My Top 3 Hotels - SmartStay Premium",
     shareSuccess: "Link shared successfully!",
-    shareError: "Cannot share on this device."
+    shareError: "Cannot share on this device.",
+    availabilities: "Check availability:",
+    officialSite: "Official Site"
   }
 };
 
