@@ -8,6 +8,7 @@ import { calculateScores } from './utils/scoring';
 import { signInWithGoogle, logOut } from './firebase';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import mockHotels from './data/hotels.json';
 
 const TOTAL_STEPS = 8;
 
@@ -64,13 +65,9 @@ function App() {
   const submit = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/searchHotels', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      const result = await response.json();
-      const rawHotels = result.data;
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const rawHotels = mockHotels;
       const scored = calculateScores(data, rawHotels);
       setResults(scored);
     } catch (err) {
@@ -123,15 +120,35 @@ function App() {
       setIsThinking(true);
 
       try {
-        const response = await fetch('http://localhost:3001/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            messages: newMessages.filter(m => m.role !== 'assistant' || newMessages.indexOf(m) > 0)
-              .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', content: m.content }))
-          })
-        });
-        const result = await response.json();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const userMessages = newMessages.filter(m => m.role === 'user');
+        const turnCount = userMessages.length;
+        const lastMsg = userMessages[turnCount - 1].content.toLowerCase();
+        
+        let result = {};
+        if (turnCount === 1) {
+          result = { ready: false, question: "Super projet de voyage ! 🌴 Pour te trouver le séjour parfait, j'ai besoin de quelques précisions. Combien de personnes partent (adultes et enfants) ?" };
+        } else if (turnCount === 2) {
+          result = { ready: false, question: "Parfait ! 👨‍👩‍👧‍👦 Et quel est votre budget maximum pour l'ensemble du séjour (transport + logement) ?" };
+        } else if (turnCount === 3) {
+          result = { ready: false, question: "Très bien ! 💰 Dernière question : qu'est-ce qui est le plus important pour vous ? La plage, la piscine, le calme, les activités pour enfants ?" };
+        } else {
+          result = {
+            ready: true,
+            data: {
+              destinationType: 'country',
+              destinationCountry: lastMsg.includes('espagne') ? 'Espagne' : 'France',
+              dateStart: '2026-08-10',
+              dateEnd: '2026-08-17',
+              adults: 2,
+              children: 2,
+              budget: 2000,
+              stayType: ['hotel', 'camping'],
+              priorities: { pool: 5, beach: 4, clean: 5, kids: 4, quiet: 3, luxury: 2, spa: 2, food: 3, nature: 3, sport: 2 }
+            }
+          };
+        }
 
         if (result.ready && result.data) {
           // L'IA a toutes les infos, on pré-remplit le formulaire
