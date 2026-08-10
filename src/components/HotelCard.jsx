@@ -24,7 +24,7 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
   const prevImage = (e) => { e.stopPropagation(); setGalleryIdx((galleryIdx - 1 + images.length) % images.length); };
 
   return (
-    <div className="card fade-in" style={{maxWidth: '100%', padding: '0', overflow: 'hidden', marginBottom: '2rem', position: 'relative'}}>
+    <div id={`hotel-${res.id}`} className="card fade-in" style={{maxWidth: '100%', padding: '0', overflow: 'hidden', marginBottom: '2rem', position: 'relative'}}>
       
       <div className="result-header" style={{
         position: 'relative',

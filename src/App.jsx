@@ -13,6 +13,9 @@ import 'leaflet/dist/leaflet.css';
 import mockHotels from './data/hotels.json';
 import { t } from './i18n';
 import HotelCard from './components/HotelCard';
+import { Intro } from './components/steps/Intro';
+import { StepChat } from './components/steps/StepChat';
+import { toast } from 'sonner';
 
 // Fix for missing default markers in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -26,9 +29,10 @@ const TOTAL_STEPS = 8;
 
 function App() {
   const [user, setUser] = useState(null);
-  const [step, setStep] = useState(0); 
+  const [step, setStep] = useState(-1); 
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
+  const [sortBy, setSortBy] = useState('score');
   const [lang, setLang] = useState('fr');
   const [darkMode, setDarkMode] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -47,7 +51,7 @@ function App() {
       setUser({ name: result.user.displayName });
       setShowLogin(false);
     } catch (error) {
-      alert("La connexion a échoué.");
+      toast.error("La connexion a échoué.");
     }
   };
 
@@ -120,7 +124,7 @@ function App() {
       setResults(scored);
     } catch (err) {
       console.error(err);
-      alert("Erreur de connexion au serveur backend (Vérifiez qu'il est bien lancé).");
+      toast.error("Erreur de connexion au serveur backend (Vérifiez qu'il est bien lancé).");
     } finally {
       setLoading(false);
     }
@@ -132,168 +136,6 @@ function App() {
 
   // --- Components for Steps ---
   
-  const Intro = () => (
-    <div className="card fade-in" style={{textAlign: 'center', backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', color: 'white', padding: '4rem 2rem', borderRadius: '16px'}}>
-      <div style={{marginBottom: '2rem', color: 'white', background: 'rgba(0,0,0,0.3)', display: 'inline-block', padding: '1rem', borderRadius: '50%'}}>
-        <Compass size={64} />
-      </div>
-      <h1 style={{fontSize: '2.5rem', marginBottom: '1rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)'}}>SmartStay Premium</h1>
-      <p style={{fontSize: '1.2rem', marginBottom: '2rem', textShadow: '0 1px 3px rgba(0,0,0,0.5)', maxWidth: '600px', margin: '0 auto 2rem auto'}}>
-        L'excellence du voyage sur mesure. Définissez vos critères, nous trouvons l'exceptionnel.
-      </p>
-      <button className="btn" onClick={() => setStep(1)} style={{fontSize: '1.2rem', padding: '1rem 2rem', background: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.3)'}}>
-        Commencer l'expérience <ArrowRight size={20}/>
-      </button>
-    </div>
-  );
-
-  const Step0 = () => {
-    const [chatMessages, setChatMessages] = useState([
-      { role: 'assistant', content: "Bonjour ! 👋 Je suis votre assistant voyage. Décrivez-moi le séjour de vos rêves et je m'occupe de tout configurer pour vous !" }
-    ]);
-    const [userInput, setUserInput] = useState('');
-    const [isThinking, setIsThinking] = useState(false);
-    const chatEndRef = useRef(null);
-
-    useEffect(() => {
-      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [chatMessages]);
-
-    const sendMessage = async () => {
-      if (!userInput.trim() || isThinking) return;
-      
-      const newMessages = [...chatMessages, { role: 'user', content: userInput }];
-      setChatMessages(newMessages);
-      setUserInput('');
-      setIsThinking(true);
-
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const userMessages = newMessages.filter(m => m.role === 'user');
-        const turnCount = userMessages.length;
-        const lastMsg = userMessages[turnCount - 1].content.toLowerCase();
-        
-        let result = {};
-        if (turnCount === 1) {
-          result = { ready: false, question: "Super projet de voyage ! 🌴 Pour te trouver le séjour parfait, j'ai besoin de quelques précisions. Combien de personnes partent (adultes et enfants) ?" };
-        } else if (turnCount === 2) {
-          result = { ready: false, question: "Parfait ! 👨‍👩‍👧‍👦 Et quel est votre budget maximum pour l'ensemble du séjour (transport + logement) ?" };
-        } else if (turnCount === 3) {
-          result = { ready: false, question: "Très bien ! 💰 Dernière question : qu'est-ce qui est le plus important pour vous ? La plage, la piscine, le calme, les activités pour enfants ?" };
-        } else {
-          result = {
-            ready: true,
-            data: {
-              destinationType: 'country',
-              destinationCountry: lastMsg.includes('espagne') ? 'Espagne' : 'France',
-              dateStart: '2026-08-10',
-              dateEnd: '2026-08-17',
-              adults: 2,
-              children: 2,
-              budget: 2000,
-              stayType: ['hotel', 'camping'],
-              priorities: { pool: 5, beach: 4, clean: 5, kids: 4, quiet: 3, luxury: 2, spa: 2, food: 3, nature: 3, sport: 2 }
-            }
-          };
-        }
-
-        if (result.ready && result.data) {
-          // L'IA a toutes les infos, on pré-remplit le formulaire
-          setChatMessages(prev => [...prev, { role: 'assistant', content: "Parfait, j'ai tout ce qu'il me faut ! 🎉 Je configure votre recherche..." }]);
-          setTimeout(() => {
-            setData(prev => ({ ...prev, ...result.data }));
-            setStep(2); // Passer directement au formulaire pré-rempli
-          }, 1500);
-        } else if (result.question) {
-          // L'IA pose une question de suivi
-          setChatMessages(prev => [...prev, { role: 'assistant', content: result.question }]);
-        }
-      } catch (err) {
-        console.error(err);
-        setChatMessages(prev => [...prev, { role: 'assistant', content: "Oups, je n'arrive pas à joindre le serveur. Vérifiez qu'il est lancé ! 🔧" }]);
-      } finally {
-        setIsThinking(false);
-      }
-    };
-
-    const handleKeyPress = (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    };
-
-    return (
-      <div className="fade-in">
-        <h2 style={{color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-          <MessageCircle size={24}/> Assistant Voyage
-        </h2>
-        <p style={{marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--text-muted)'}}>
-          Décrivez votre séjour idéal, l'assistant vous posera les bonnes questions.
-        </p>
-        
-        {/* Zone de chat */}
-        <div style={{
-          background: '#f1f5f9', 
-          borderRadius: '16px', 
-          padding: '1rem',
-          maxHeight: '350px',
-          overflowY: 'auto',
-          marginBottom: '1rem'
-        }}>
-          {chatMessages.map((msg, i) => (
-            <div key={i} style={{
-              display: 'flex',
-              justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              marginBottom: '1rem'
-            }}>
-              <div className={msg.role === 'user' ? 'chat-message-user' : 'chat-message-bot'}>
-                {msg.content}
-              </div>
-            </div>
-          ))}
-          {isThinking && (
-            <div style={{display: 'flex', justifyContent: 'flex-start', marginBottom: '1rem'}}>
-              <div className="chat-message-bot typing-indicator">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-          )}
-          <div ref={chatEndRef} />
-        </div>
-
-        {/* Barre de saisie */}
-        <div style={{display: 'flex', gap: '0.5rem'}}>
-          <input 
-            type="text"
-            className="form-input"
-            placeholder="Ex: On veut partir en Espagne avec nos 2 enfants..."
-            value={userInput}
-            onChange={e => setUserInput(e.target.value)}
-            onKeyDown={handleKeyPress}
-            disabled={isThinking}
-            style={{flex: 1, marginBottom: 0}}
-          />
-          <button 
-            className="btn" 
-            onClick={sendMessage} 
-            disabled={!userInput.trim() || isThinking}
-            style={{padding: '0.75rem 1rem', display: 'flex', alignItems: 'center'}}
-          >
-            <Send size={18}/>
-          </button>
-        </div>
-
-        <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
-          <button className="btn-secondary" onClick={() => setStep(2)} style={{fontSize: '0.9rem'}}>
-            Passer et remplir manuellement →
-          </button>
-        </div>
-      </div>
-    );
-  };
-
   const Step1 = () => (
     <div className="fade-in">
       <h2><MapPin size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Votre Itinéraire</h2>
@@ -313,8 +155,8 @@ function App() {
                       updateData('lat', pos.coords.latitude);
                       updateData('lng', pos.coords.longitude);
                       updateData('departure', city);
-                    }, () => alert("Impossible d'obtenir votre position."));
-                  } else alert("Géolocalisation non supportée.");
+                    }, () => toast.error("Impossible d'obtenir votre position."));
+                  } else toast.error("Géolocalisation non supportée.");
                 } else {
                   updateData('departure', city);
                 }
@@ -349,13 +191,13 @@ function App() {
               <button className="btn fade-in" onClick={() => {
                 if (navigator.geolocation) {
                   navigator.geolocation.getCurrentPosition((pos) => {
-                    alert(`Localisation OK ! Lat: ${pos.coords.latitude.toFixed(2)}, Lng: ${pos.coords.longitude.toFixed(2)}`);
+                    toast.success(`Localisation OK ! Lat: ${pos.coords.latitude.toFixed(2)}, Lng: ${pos.coords.longitude.toFixed(2)}`);
                     updateData('lat', pos.coords.latitude);
                     updateData('lng', pos.coords.longitude);
                     updateData('departure', 'Ma position');
-                  }, () => alert("Impossible d'obtenir votre position."));
+                  }, () => toast.error("Impossible d'obtenir votre position."));
                 } else {
-                  alert("Géolocalisation non supportée.");
+                  toast.error("Géolocalisation non supportée.");
                 }
               }}>
                 <MapPin size={18} /> Me localiser
@@ -657,7 +499,13 @@ function App() {
       );
     }
 
-    const topResults = results.slice(0, 3);
+    let sortedResults = [...results];
+    if (sortBy === 'price') {
+      sortedResults.sort((a, b) => a.totalPrice - b.totalPrice);
+    } else if (sortBy === 'distance') {
+      sortedResults.sort((a, b) => a.distanceKm - b.distanceKm);
+    }
+    const topResults = sortedResults.slice(0, 3);
 
     return (
       <div className="app-container" style={{maxWidth: '900px'}}>
@@ -672,8 +520,17 @@ function App() {
               res.lat && res.lng && (
                 <Marker key={res.id} position={[res.lat, res.lng]}>
                   <Popup>
-                    <strong>#{index + 1} {res.name}</strong><br />
-                    {res.basePricePerNight}€ / nuit
+                    <div style={{textAlign: 'center'}}>
+                      <img src={res.images && res.images.length > 0 ? res.images[0] : res.image} alt={res.name} style={{width: '100%', height: '80px', objectFit: 'cover', borderRadius: '4px', marginBottom: '0.5rem'}} />
+                      <strong style={{display: 'block', fontSize: '1rem', marginBottom: '0.2rem'}}>{res.name}</strong>
+                      <span style={{color: 'var(--primary)', fontWeight: 'bold'}}>{res.basePricePerNight}€ / nuit</span><br/>
+                      <button 
+                        onClick={() => document.getElementById(`hotel-${res.id}`)?.scrollIntoView({behavior: 'smooth'})} 
+                        style={{background: 'var(--primary)', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '8px', marginTop: '0.5rem', cursor: 'pointer', width: '100%', fontWeight: 'bold'}}
+                      >
+                        Voir les détails
+                      </button>
+                    </div>
                   </Popup>
                 </Marker>
               )
@@ -683,7 +540,13 @@ function App() {
 
         <div style={{marginTop: '2rem', textAlign: 'center'}}>
           <h1 style={{color: 'var(--primary)', marginBottom: '0.5rem'}}>Voici votre Top {topResults.length}</h1>
-          <p>Classé selon votre affinité avec vos critères (Score sur 100).</p>
+          <p>Les meilleures correspondances selon vos critères.</p>
+          
+          <div style={{display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap'}}>
+            <button className={`btn-secondary ${sortBy === 'score' ? 'active' : ''}`} onClick={() => setSortBy('score')} style={sortBy === 'score' ? {background: 'var(--primary)', color: 'white'} : {}}>🌟 Meilleur Score</button>
+            <button className={`btn-secondary ${sortBy === 'price' ? 'active' : ''}`} onClick={() => setSortBy('price')} style={sortBy === 'price' ? {background: 'var(--primary)', color: 'white'} : {}}>💰 Prix le plus bas</button>
+            <button className={`btn-secondary ${sortBy === 'distance' ? 'active' : ''}`} onClick={() => setSortBy('distance')} style={sortBy === 'distance' ? {background: 'var(--primary)', color: 'white'} : {}}>📍 Le plus proche</button>
+          </div>
         </div>
         
         {topResults.map((res, index) => (
@@ -711,7 +574,7 @@ function App() {
               navigator.share({ title: 'Mon voyage SmartStay', url: window.location.href })
                 .catch(() => {});
             } else {
-              alert('Partage non supporté');
+              toast.error('Partage non supporté');
             }
           }}>
             <Share2 size={18} /> Partager
@@ -724,8 +587,8 @@ function App() {
   // --- Main Render ---
 
   const steps = [
-    <Intro key="intro" />,
-    <Step0 key="s0" />,
+    null,
+    null,
     <Step1 key="s1" />,
     <Step2 key="s2" />,
     <Step3 key="s3" />,
@@ -786,7 +649,7 @@ function App() {
         </div>
       )}
 
-      {step > 0 && (
+      {step >= 0 && (
         <div className="progress-container">
           <div className="step-indicator" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}>
             <span>SmartStay Premium</span>
@@ -799,7 +662,9 @@ function App() {
       )}
 
       <div className="card">
-        {steps[step]}
+        {step === -1 && <Intro setStep={setStep} />}
+        {step === 0 && <StepChat setStep={setStep} setData={setData} />}
+        {step > 0 && steps[step]}
         
         {step > 0 && (
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
