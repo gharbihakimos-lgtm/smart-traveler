@@ -117,6 +117,9 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
             <a href={`https://www.agoda.com/search?text=${encodeURIComponent(res.name + ' ' + res.location)}`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF567D', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 86, 125, 0.3)'}}>
               Agoda
             </a>
+            <a href={`https://www.airbnb.fr/s/${encodeURIComponent(res.name + ' ' + res.location)}/homes`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF5A5F', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 90, 95, 0.3)'}}>
+              Airbnb
+            </a>
             <a href={`https://www.google.com/search?q=${encodeURIComponent(res.name + ' ' + res.location + ' official site')}`} target="_blank" rel="noreferrer" className="btn-secondary fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem'}}>
               {t('officialSite', lang)}
             </a>
