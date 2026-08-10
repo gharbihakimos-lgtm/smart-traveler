@@ -14,63 +14,54 @@ export const calculateScores = (userData, hotelsData) => {
   const budgetMax = userData.budgetFlexible ? userData.budget * 1.1 : userData.budget;
 
   const scoredHotels = hotelsData.map(hotel => {
-    // 0. Filter by Destination
-    if (userData.destinationType === 'around_me') {
-      if (hotel.distanceKm > userData.distanceMax) return { ...hotel, score: 0 };
-    } else if (userData.destinationType === 'country') {
-      if (hotel.country !== userData.destinationCountry) return { ...hotel, score: 0 };
-    } else if (userData.destinationType === 'region') {
-      if (hotel.region !== userData.destinationRegion) return { ...hotel, score: 0 };
-    }
-    // "world" means no geographic filter
+    let baseScore = 0;
+    const warnings = [];
 
-    // 1. Filter by stay type
+    // 0. Destination Check
+    if (userData.destinationType === 'around_me' && hotel.distanceKm > userData.distanceMax) {
+      warnings.push(`Trop loin (${hotel.distanceKm} km, max ${userData.distanceMax} km)`);
+    } else if (userData.destinationType === 'country' && hotel.country !== userData.destinationCountry) {
+      warnings.push(`Situé en ${hotel.country} (Vous vouliez : ${userData.destinationCountry})`);
+    } else if (userData.destinationType === 'region' && hotel.region !== userData.destinationRegion) {
+      warnings.push(`Situé en ${hotel.region} (Vous vouliez : ${userData.destinationRegion})`);
+    }
+
+    // 1. Stay Type Check
     if (!userData.stayType.includes(hotel.type)) {
-      return { ...hotel, score: 0, failReason: 'Type de séjour non souhaité' };
+      let typeName = hotel.type === 'appart' ? 'Appartement' : hotel.type === 'village' ? 'Village vacances' : hotel.type;
+      warnings.push(`Type de logement différent (C'est un(e) ${typeName})`);
     }
 
-    // 2. Check Constraints (Mandatory)
+    // 2. Constraints Check
     const missingConstraints = userData.constraints.filter(c => !hotel.constraints.includes(c));
     if (missingConstraints.length > 0) {
-      return { ...hotel, score: 0, failReason: `Il manque: ${missingConstraints.join(', ')}` };
+      warnings.push(`Critère(s) manquant(s) : ${missingConstraints.join(', ')}`);
     }
 
     // 3. Price Calculation
     const rooms = userData.sameRoom ? 1 : 2;
     const accommodationPrice = hotel.basePricePerNight * nights * rooms;
-    
-    // If distance is explicitly known, refine transport cost
-    const refinedTransport = (hotel.distanceKm * 0.2) * rooms; // e.g., 0.2€ per km per room
+    const refinedTransport = (hotel.distanceKm * 0.2) * rooms;
     const totalPrice = accommodationPrice + refinedTransport;
 
     if (totalPrice > budgetMax) {
-      return { ...hotel, score: 0, failReason: `Hors budget (${Math.round(totalPrice)}€)` };
+      warnings.push(`Dépasse votre budget de ${Math.round(totalPrice - budgetMax)}€`);
     }
 
-    // 4. Score Calculation
-    let score = 0;
-    
-    // Quality (Up to 30 points)
-    score += hotel.rating * 3; 
+    // 4. Positive Score Calculation (max ~100)
+    baseScore += hotel.rating * 3; // Up to 30
 
-    // Budget Affinity (Up to 20 points)
     const budgetDiff = budgetMax - totalPrice;
-    const budgetScore = Math.min(20, (budgetDiff / budgetMax) * 40); 
-    score += budgetScore;
+    let budgetScore = 0;
+    if (budgetDiff >= 0) {
+      budgetScore = Math.min(20, (budgetDiff / budgetMax) * 40);
+    }
+    baseScore += budgetScore; // Up to 20
 
-    // Dynamic Priority matching (Max ~50 points)
-    // Map of user priority keys to hotel score keys
     const priorityMapping = {
-      pool: 'poolScore',
-      beach: 'beachScore',
-      clean: 'cleanScore',
-      kids: 'kidsScore',
-      quiet: 'quietScore',
-      luxury: 'luxuryScore',
-      spa: 'spaScore',
-      food: 'foodScore',
-      nature: 'natureScore',
-      sport: 'sportScore'
+      pool: 'poolScore', beach: 'beachScore', clean: 'cleanScore',
+      kids: 'kidsScore', quiet: 'quietScore', luxury: 'luxuryScore',
+      spa: 'spaScore', food: 'foodScore', nature: 'natureScore', sport: 'sportScore'
     };
 
     const axesCount = Object.keys(userData.priorities).length || 6;
@@ -78,32 +69,38 @@ export const calculateScores = (userData, hotelsData) => {
 
     Object.keys(userData.priorities).forEach(key => {
       const hKey = priorityMapping[key];
-      const uVal = userData.priorities[key]; // 1 to 5
-      const hVal = hotel[hKey] || 3; // 1 to 5, default to average if missing
-      
-      const match = (uVal * hVal) / 5; // scales 1 to 5
-      score += match * (maxPointsPerAxis / 5); 
+      const uVal = userData.priorities[key]; 
+      const hVal = hotel[hKey] || 3; 
+      const match = (uVal * hVal) / 5; 
+      baseScore += match * (maxPointsPerAxis / 5); 
     });
 
-    // Generate dynamic "Why" text
-    let why = `J'ai choisi ce logement car `;
-    if (userData.destinationType === 'around_me') why += `il est proche de chez vous (${hotel.distanceKm} km), `;
-    if (userData.children > 0 && hotel.kidsScore >= 4) why += `il est parfaitement adapté aux enfants, `;
-    if (userData.priorities.spa >= 4 && hotel.spaScore >= 4) why += `son espace bien-être est excellent, `;
-    if (totalPrice < userData.budget * 0.8) why += `et il vous permet de faire de belles économies par rapport à votre budget.`;
-    else why += `et il rentre dans votre budget de ${userData.budget}€.`;
+    // 5. Apply Penalties for Warnings
+    let finalScore = Math.round(baseScore);
+    if (warnings.length > 0) {
+      finalScore -= (warnings.length * 20); // -20 points per warning
+    }
+    
+    finalScore = Math.max(10, Math.min(99, finalScore)); // Score entre 10 et 99
 
-    score = Math.min(99, Math.round(score));
+    let why = `J'ai sélectionné ce logement car `;
+    if (warnings.length === 0) {
+      why += `il correspond parfaitement à 100% de vos critères stricts ! `;
+    } else {
+      why += `c'est l'une des meilleures alternatives disponibles malgré quelques compromis. `;
+    }
+    if (userData.children > 0 && hotel.kidsScore >= 4) why += `Il est idéal pour les familles. `;
+    if (totalPrice <= userData.budget) why += `Et surtout, il rentre dans votre budget !`;
 
     return {
       ...hotel,
-      score,
+      score: finalScore,
       totalPrice: Math.round(totalPrice),
       nights,
-      why
+      why,
+      warnings
     };
   });
 
-  const validHotels = scoredHotels.filter(h => h.score > 0).sort((a, b) => b.score - a.score);
-  return validHotels;
+  return scoredHotels.sort((a, b) => b.score - a.score);
 };

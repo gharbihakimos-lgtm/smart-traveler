@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  MapPin, Calendar, Users, Wallet, Home, Star, CheckSquare, 
-  Sparkles, ArrowRight, ArrowLeft, Check, Palmtree, Map, ShieldCheck, ThumbsUp 
+  MapPin, Calendar, Users, Wallet, Heart, Settings2,
+  CheckCircle, ArrowRight, ArrowLeft, Check, Palmtree, Map, ShieldCheck, ThumbsUp,
+  Globe, Euro, Compass, MessageCircle, Send, Home
 } from 'lucide-react';
 import { calculateScores } from './utils/scoring';
+import { signInWithGoogle, logOut } from './firebase';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const TOTAL_STEPS = 8;
 
@@ -13,6 +17,21 @@ function App() {
   const [results, setResults] = useState(null);
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      const result = await signInWithGoogle();
+      setUser({ name: result.user.displayName });
+      setShowLogin(false);
+    } catch (error) {
+      alert("La connexion a échoué.");
+    }
+  };
+
+  const handleLogout = async () => {
+    await logOut();
+    setUser(null);
+  };
 
   const [data, setData] = useState({
     departure: 'Rennes',
@@ -45,16 +64,13 @@ function App() {
   const submit = async () => {
     setLoading(true);
     try {
-      // 1. Fetch raw hotels from our backend proxy (simulating an external API)
       const response = await fetch('http://localhost:3001/api/searchHotels', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
       const result = await response.json();
-      const rawHotels = result.data; // The raw list of hotels
-
-      // 2. Score them with our AI algorithm
+      const rawHotels = result.data;
       const scored = calculateScores(data, rawHotels);
       setResults(scored);
     } catch (err) {
@@ -72,63 +88,152 @@ function App() {
   // --- Components for Steps ---
   
   const Intro = () => (
-    <div className="card fade-in" style={{textAlign: 'center'}}>
-      <div style={{marginBottom: '2rem', color: 'var(--primary)'}}>
-        <Sparkles size={64} />
+    <div className="card fade-in" style={{textAlign: 'center', backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', color: 'white', padding: '4rem 2rem', borderRadius: '16px'}}>
+      <div style={{marginBottom: '2rem', color: 'white', background: 'rgba(0,0,0,0.3)', display: 'inline-block', padding: '1rem', borderRadius: '50%'}}>
+        <Compass size={64} />
       </div>
-      <h1 style={{fontSize: '2.5rem', marginBottom: '1rem'}}>SmartStay AI</h1>
-      <p style={{fontSize: '1.2rem', marginBottom: '2rem'}}>
-        "Dites-moi vos envies, l'IA trouve votre séjour idéal."
+      <h1 style={{fontSize: '2.5rem', marginBottom: '1rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)'}}>SmartStay Premium</h1>
+      <p style={{fontSize: '1.2rem', marginBottom: '2rem', textShadow: '0 1px 3px rgba(0,0,0,0.5)', maxWidth: '600px', margin: '0 auto 2rem auto'}}>
+        L'excellence du voyage sur mesure. Définissez vos critères, nous trouvons l'exceptionnel.
       </p>
-      <button className="btn" onClick={() => setStep(1)} style={{fontSize: '1.2rem', padding: '1rem 2rem'}}>
-        Commencer <ArrowRight size={20}/>
+      <button className="btn" onClick={() => setStep(1)} style={{fontSize: '1.2rem', padding: '1rem 2rem', background: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.3)'}}>
+        Commencer l'expérience <ArrowRight size={20}/>
       </button>
     </div>
   );
 
   const Step0 = () => {
-    const [prompt, setPrompt] = useState('');
-    const [analyzing, setAnalyzing] = useState(false);
+    const [chatMessages, setChatMessages] = useState([
+      { role: 'assistant', content: "Bonjour ! 👋 Je suis votre assistant voyage. Décrivez-moi le séjour de vos rêves et je m'occupe de tout configurer pour vous !" }
+    ]);
+    const [userInput, setUserInput] = useState('');
+    const [isThinking, setIsThinking] = useState(false);
+    const chatEndRef = useRef(null);
 
-    const handleMagicSearch = () => {
-      setAnalyzing(true);
-      // Simuler l'appel à l'API LLM
-      setTimeout(() => {
-        setAnalyzing(false);
-        // Simulation d'une compréhension de langage naturel
-        if(prompt.toLowerCase().includes('espagne')) {
-           setData(prev => ({...prev, destinationType: 'country', destinationCountry: 'Espagne', budget: 2000, adults: 2, children: 2, sameRoom: false, priorities: {...prev.priorities, beach: 5}}));
+    useEffect(() => {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [chatMessages]);
+
+    const sendMessage = async () => {
+      if (!userInput.trim() || isThinking) return;
+      
+      const newMessages = [...chatMessages, { role: 'user', content: userInput }];
+      setChatMessages(newMessages);
+      setUserInput('');
+      setIsThinking(true);
+
+      try {
+        const response = await fetch('http://localhost:3001/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            messages: newMessages.filter(m => m.role !== 'assistant' || newMessages.indexOf(m) > 0)
+              .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', content: m.content }))
+          })
+        });
+        const result = await response.json();
+
+        if (result.ready && result.data) {
+          // L'IA a toutes les infos, on pré-remplit le formulaire
+          setChatMessages(prev => [...prev, { role: 'assistant', content: "Parfait, j'ai tout ce qu'il me faut ! 🎉 Je configure votre recherche..." }]);
+          setTimeout(() => {
+            setData(prev => ({ ...prev, ...result.data }));
+            setStep(2); // Passer directement au formulaire pré-rempli
+          }, 1500);
+        } else if (result.question) {
+          // L'IA pose une question de suivi
+          setChatMessages(prev => [...prev, { role: 'assistant', content: result.question }]);
         }
-        setStep(2); // On passe directement au formulaire pré-rempli (Etape 1 d'origine)
-      }, 2500);
+      } catch (err) {
+        console.error(err);
+        setChatMessages(prev => [...prev, { role: 'assistant', content: "Oups, je n'arrive pas à joindre le serveur. Vérifiez qu'il est lancé ! 🔧" }]);
+      } finally {
+        setIsThinking(false);
+      }
+    };
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
     };
 
     return (
-      <div className="fade-in" style={{textAlign: 'center'}}>
-        <h2 style={{color: 'var(--primary)', marginBottom: '1rem'}}><Sparkles size={28} style={{verticalAlign:'middle'}}/> Pilote Auto IA</h2>
-        <p style={{marginBottom: '2rem', fontSize: '1.1rem'}}>Décrivez votre séjour idéal en langage naturel, ou remplissez le formulaire manuellement.</p>
+      <div className="fade-in">
+        <h2 style={{color: 'var(--primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+          <MessageCircle size={24}/> Assistant Voyage
+        </h2>
+        <p style={{marginBottom: '1.5rem', fontSize: '0.95rem', color: 'var(--text-muted)'}}>
+          Décrivez votre séjour idéal, l'assistant vous posera les bonnes questions.
+        </p>
         
-        <textarea 
-          className="form-input" 
-          rows="4" 
-          placeholder="Ex: Je veux partir au soleil en Espagne avec ma femme et mes 2 ados. Budget max 2000€. Idéalement proche de la mer."
-          value={prompt}
-          onChange={e => setPrompt(e.target.value)}
-          style={{resize: 'none', marginBottom: '1.5rem', fontSize: '1rem'}}
-        ></textarea>
+        {/* Zone de chat */}
+        <div style={{
+          background: '#f1f5f9', 
+          borderRadius: '16px', 
+          padding: '1rem',
+          maxHeight: '350px',
+          overflowY: 'auto',
+          marginBottom: '1rem'
+        }}>
+          {chatMessages.map((msg, i) => (
+            <div key={i} style={{
+              display: 'flex',
+              justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+              marginBottom: '0.75rem'
+            }}>
+              <div style={{
+                background: msg.role === 'user' ? 'var(--primary)' : 'white',
+                color: msg.role === 'user' ? 'white' : 'var(--text-main)',
+                padding: '0.75rem 1rem',
+                borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                maxWidth: '80%',
+                fontSize: '0.95rem',
+                lineHeight: '1.5',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+              }}>
+                {msg.content}
+              </div>
+            </div>
+          ))}
+          {isThinking && (
+            <div style={{display: 'flex', justifyContent: 'flex-start', marginBottom: '0.75rem'}}>
+              <div style={{background: 'white', padding: '0.75rem 1.25rem', borderRadius: '16px 16px 16px 4px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', color: 'var(--text-muted)'}}>
+                ✍️ Réflexion en cours...
+              </div>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
 
-        {analyzing ? (
-           <div style={{color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.1rem'}} className="fade-in">🧠 L'IA analyse et configure votre recherche...</div>
-        ) : (
-          <div style={{display: 'flex', gap: '1rem', justifyContent: 'center'}}>
-            <button className="btn" onClick={handleMagicSearch} disabled={prompt.length < 10}>
-              Recherche Magique IA
-            </button>
-            <button className="btn-secondary" onClick={() => setStep(2)}>
-              Remplir manuellement
-            </button>
-          </div>
-        )}
+        {/* Barre de saisie */}
+        <div style={{display: 'flex', gap: '0.5rem'}}>
+          <input 
+            type="text"
+            className="form-input"
+            placeholder="Ex: On veut partir en Espagne avec nos 2 enfants..."
+            value={userInput}
+            onChange={e => setUserInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            disabled={isThinking}
+            style={{flex: 1, marginBottom: 0}}
+          />
+          <button 
+            className="btn" 
+            onClick={sendMessage} 
+            disabled={!userInput.trim() || isThinking}
+            style={{padding: '0.75rem 1rem', display: 'flex', alignItems: 'center'}}
+          >
+            <Send size={18}/>
+          </button>
+        </div>
+
+        <div style={{textAlign: 'center', marginTop: '1.5rem'}}>
+          <button className="btn-secondary" onClick={() => setStep(2)} style={{fontSize: '0.9rem'}}>
+            Passer et remplir manuellement →
+          </button>
+        </div>
       </div>
     );
   };
@@ -361,8 +466,8 @@ function App() {
 
     return (
       <div className="fade-in">
-        <h2><Star size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Vos priorités</h2>
-        <p style={{marginBottom: '1rem'}}>Qu'est-ce qui est le plus important pour vous ? (1 à 5 étoiles)</p>
+        <h2><Heart size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Vos priorités</h2>
+        <p style={{marginBottom: '1rem'}}>Qu'est-ce qui est le plus important pour vous ? (1 à 5)</p>
         
         <div style={{background: 'white', padding: '1rem 1.5rem', borderRadius: '16px', border: '1px solid var(--border)', marginBottom: '1rem'}}>
           {displayCriteria.map(c => (
@@ -413,7 +518,7 @@ function App() {
 
     return (
       <div className="fade-in">
-        <h2><CheckSquare size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Contraintes</h2>
+        <h2><CheckCircle size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Contraintes</h2>
         <p style={{marginBottom: '2rem'}}>Cochez ce qui est non négociable.</p>
         
         <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem'}}>
@@ -445,8 +550,8 @@ function App() {
     return (
       <div className="app-container">
         <div className="card loading-screen fade-in">
-          <Sparkles className="magic-icon" />
-          <h2 style={{marginBottom: '1rem'}}>L'IA analyse 1000+ séjours...</h2>
+          <Compass className="magic-icon" />
+          <h2 style={{marginBottom: '1rem'}}>Analyse de 1000+ séjours en cours...</h2>
           <p>Recherche du meilleur compromis Famille / Prix / Localisation</p>
         </div>
       </div>
@@ -472,7 +577,27 @@ function App() {
 
     return (
       <div className="app-container" style={{maxWidth: '900px'}}>
-        <div style={{marginBottom: '2rem', textAlign: 'center'}}>
+        {/* Interactive Map */}
+        <div className="card fade-in" style={{marginTop: '2rem', padding: '0', overflow: 'hidden', height: '400px', borderRadius: '12px'}}>
+          <MapContainer center={[46.0, 2.0]} zoom={4} style={{ height: '100%', width: '100%' }}>
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {topResults.map((res, index) => (
+              res.lat && res.lng && (
+                <Marker key={res.id} position={[res.lat, res.lng]}>
+                  <Popup>
+                    <strong>#{index + 1} {res.name}</strong><br />
+                    {res.basePricePerNight}€ / nuit
+                  </Popup>
+                </Marker>
+              )
+            ))}
+          </MapContainer>
+        </div>
+
+        <div style={{marginTop: '2rem', textAlign: 'center'}}>
           <h1 style={{color: 'var(--primary)', marginBottom: '0.5rem'}}>Voici votre Top {topResults.length}</h1>
           <p>Classé selon votre affinité avec vos critères (Score sur 100).</p>
         </div>
@@ -489,18 +614,27 @@ function App() {
             }}>
               {index === 0 && (
                 <div style={{display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.5rem'}}>
-                  <Sparkles size={20} color="var(--secondary)"/> <span style={{fontWeight:600, color: 'white', textTransform:'uppercase', letterSpacing:'0.05em'}}>Recommandation #1 IA</span>
+                  <span style={{fontWeight:600, color: '#fbbf24', textTransform:'uppercase', letterSpacing:'0.05em', fontSize: '0.85rem'}}>🏆 Recommandation #1</span>
                 </div>
               )}
               <h1 style={{color: 'white', fontSize: index === 0 ? '2rem' : '1.5rem', margin: '0'}}>{res.name}</h1>
               <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', marginTop: '0.2rem'}}><MapPin size={18} style={{verticalAlign:'text-bottom'}}/> {res.location}</p>
               
               <div className="score-badge" style={{top: '1.5rem', right: '1.5rem', fontSize: index === 0 ? '1.25rem' : '1rem', background: 'rgba(0,0,0,0.5)', borderColor: 'rgba(255,255,255,0.2)'}}>
-                Score IA: <span style={{color: 'var(--success)'}}>{res.score}/100</span>
+                Score: <span style={{color: 'var(--success)'}}>{res.score}/100</span>
               </div>
             </div>
             
             <div className="result-card-body" style={{padding: '2rem'}}>
+              {res.warnings && res.warnings.length > 0 && (
+                <div className="fade-in" style={{background: '#fee2e2', color: '#991b1b', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem', borderLeft: '4px solid #dc2626'}}>
+                  <strong>⚠️ Ce choix ne respecte pas tous vos critères stricts :</strong>
+                  <ul style={{margin: '0.5rem 0 0 1.5rem', padding: 0}}>
+                    {res.warnings.map((w, i) => <li key={i}>{w}</li>)}
+                  </ul>
+                </div>
+              )}
+              
               <div style={{display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem'}}>
                 <div style={{flex: '1 1 150px'}}>
                   <h3 style={{color: 'var(--text-main)', marginBottom:'1rem'}}>💰 Prix estimé</h3>
@@ -532,20 +666,17 @@ function App() {
                 </div>
               </div>
               
-              {index === 0 && (
-                <div style={{textAlign: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)'}}>
-                  <a 
-                    href={`https://www.booking.com/searchresults.html?ss=${res.location}&checkin=${data.dateStart}&checkout=${data.dateEnd}&group_adults=${data.adults}&group_children=${data.children}&aid=1234567`} 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="btn fade-in" 
-                    style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 2rem', fontSize: '1rem', background: '#003580'}}
-                  >
-                    Réserver sur Booking.com
-                  </a>
-                  <p style={{fontSize: '0.8rem', marginTop: '0.75rem', color: 'var(--text-muted)'}}>*Lien d'affiliation simulé pour générer des revenus (Pilier 4)</p>
-                </div>
-              )}
+              <div style={{textAlign: 'center', marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)'}}>
+                <a 
+                  href={`https://www.booking.com/searchresults.html?ss=${res.location}&checkin=${data.dateStart}&checkout=${data.dateEnd}&group_adults=${data.adults}&group_children=${data.children}&aid=1234567`} 
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="btn fade-in" 
+                  style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 2rem', fontSize: '1rem', background: '#003580'}}
+                >
+                  Réserver sur Booking.com
+                </a>
+              </div>
             </div>
           </div>
         ))}
@@ -577,24 +708,34 @@ function App() {
     <div className="app-container">
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
         <div style={{fontWeight: 'bold', color: 'var(--primary)', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-          <Sparkles size={20}/> SmartStay AI
+          <Compass size={24}/> SmartStay Premium
         </div>
-        {user ? (
-          <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-            <span style={{fontWeight: 500}}>👋 Bonjour, Utilisateur Test</span>
-            <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}} onClick={() => setUser(null)}>Déconnexion</button>
+        
+        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+          <div style={{display: 'flex', gap: '0.5rem', color: 'var(--text-muted)'}}>
+            <Globe size={20} style={{cursor: 'pointer'}} title="Changer de langue" onClick={() => alert('Langue: FR')} />
+            <Euro size={20} style={{cursor: 'pointer'}} title="Changer de devise" onClick={() => alert('Devise: EUR')} />
           </div>
-        ) : (
-          <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}} onClick={() => setShowLogin(true)}>Se connecter</button>
-        )}
+          
+          {user ? (
+            <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1rem', borderLeft: '1px solid var(--border)', paddingLeft: '1rem'}}>
+              <span style={{fontWeight: 500}}>👋 {user.name}</span>
+              <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}} onClick={handleLogout}>Déconnexion</button>
+            </div>
+          ) : (
+            <div style={{marginLeft: '1rem', borderLeft: '1px solid var(--border)', paddingLeft: '1rem'}}>
+              <button className="btn-secondary" style={{padding: '0.5rem 1rem', fontSize: '0.9rem'}} onClick={() => setShowLogin(true)}>Se connecter</button>
+            </div>
+          )}
+        </div>
       </div>
 
       {showLogin && (
         <div style={{position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000}}>
           <div className="card fade-in" style={{width: '400px', textAlign: 'center'}}>
-            <h2 style={{marginBottom: '1rem'}}>Connexion Firebase</h2>
-            <p style={{marginBottom: '2rem'}}>Simulez une connexion utilisateur pour débloquer les favoris.</p>
-            <button className="btn" style={{width: '100%', marginBottom: '1rem'}} onClick={() => {setUser({name: 'Test'}); setShowLogin(false);}}>
+            <h2 style={{marginBottom: '1rem'}}>Connexion</h2>
+            <p style={{marginBottom: '2rem'}}>Connectez-vous pour débloquer les favoris.</p>
+            <button className="btn" style={{width: '100%', marginBottom: '1rem'}} onClick={handleLogin}>
               Se connecter avec Google
             </button>
             <button className="btn-secondary" style={{width: '100%'}} onClick={() => setShowLogin(false)}>
@@ -607,7 +748,7 @@ function App() {
       {step > 0 && (
         <div className="progress-container">
           <div className="step-indicator" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}>
-            <span>SmartStay AI</span>
+            <span>SmartStay Premium</span>
             <span>Étape {step} / {TOTAL_STEPS}</span>
           </div>
           <div className="progress-bar-bg">
