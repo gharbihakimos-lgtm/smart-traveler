@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   MapPin, Calendar, Users, Wallet, Heart, Settings2,
   CheckCircle, ArrowRight, ArrowLeft, Check, Palmtree, Map, ShieldCheck, ThumbsUp,
-  Globe, Euro, Compass, MessageCircle, Send, Home
+  Globe, Euro, Compass, MessageCircle, Send, Home,
+  Share2, Download, Sun, Moon
 } from 'lucide-react';
 import { calculateScores } from './utils/scoring';
 import { signInWithGoogle, logOut } from './firebase';
