@@ -1,3 +1,16 @@
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  if (!lat1 || !lon1 || !lat2 || !lon2) return null;
+  const R = 6371;
+  const dLat = (lat2-lat1) * (Math.PI/180);
+  const dLon = (lon2-lon1) * (Math.PI/180); 
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2); 
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  return Math.round(R * c);
+}
+
 export const calculateScores = (userData, hotelsData) => {
   // Calculate nights
   const start = new Date(userData.dateStart);
@@ -17,9 +30,16 @@ export const calculateScores = (userData, hotelsData) => {
     let baseScore = 0;
     const warnings = [];
 
+    // True distance override
+    let hotelDistance = hotel.distanceKm;
+    if (userData.lat && userData.lng && hotel.lat && hotel.lng) {
+      const d = getDistanceFromLatLonInKm(userData.lat, userData.lng, hotel.lat, hotel.lng);
+      if (d !== null) hotelDistance = d;
+    }
+
     // 0. Destination Check
-    if (userData.destinationType === 'around_me' && hotel.distanceKm > userData.distanceMax) {
-      warnings.push(`Trop loin (${hotel.distanceKm} km, max ${userData.distanceMax} km)`);
+    if (userData.destinationType === 'around_me' && hotelDistance > userData.distanceMax) {
+      warnings.push(`Trop loin (${hotelDistance} km, max ${userData.distanceMax} km)`);
     } else if (userData.destinationType === 'country' && hotel.country !== userData.destinationCountry) {
       warnings.push(`Situé en ${hotel.country} (Vous vouliez : ${userData.destinationCountry})`);
     } else if (userData.destinationType === 'region' && hotel.region !== userData.destinationRegion) {
@@ -41,7 +61,7 @@ export const calculateScores = (userData, hotelsData) => {
     // 3. Price Calculation
     const rooms = userData.sameRoom ? 1 : 2;
     const accommodationPrice = hotel.basePricePerNight * nights * rooms;
-    const refinedTransport = (hotel.distanceKm * 0.2) * rooms;
+    const refinedTransport = (hotelDistance * 0.2) * rooms;
     const totalPrice = accommodationPrice + refinedTransport;
 
     if (totalPrice > budgetMax) {
@@ -94,6 +114,7 @@ export const calculateScores = (userData, hotelsData) => {
 
     return {
       ...hotel,
+      distanceKm: hotelDistance,
       score: finalScore,
       totalPrice: Math.round(totalPrice),
       nights,

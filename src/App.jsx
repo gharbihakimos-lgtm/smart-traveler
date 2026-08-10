@@ -302,11 +302,23 @@ function App() {
       <div className="form-group" style={{marginBottom: '2rem', paddingBottom: '2rem', borderBottom: '1px solid var(--border)'}}>
         <label className="form-label">1. Lieu de départ (pour le calcul du trajet)</label>
         <div className="radio-grid">
-          {['Rennes', 'Nantes', 'Paris', 'Autre'].map(city => (
+          {['Rennes', 'Nantes', 'Paris', 'Autre', '📍 Ma position'].map(city => (
             <div 
               key={city}
               className={`radio-card ${data.departure === city ? 'selected' : ''}`}
-              onClick={() => updateData('departure', city)}
+              onClick={() => {
+                if (city === '📍 Ma position') {
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                      updateData('lat', pos.coords.latitude);
+                      updateData('lng', pos.coords.longitude);
+                      updateData('departure', city);
+                    }, () => alert("Impossible d'obtenir votre position."));
+                  } else alert("Géolocalisation non supportée.");
+                } else {
+                  updateData('departure', city);
+                }
+              }}
             >
               {city}
             </div>
