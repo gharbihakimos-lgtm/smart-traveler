@@ -509,8 +509,19 @@ function App() {
 
     return (
       <div className="app-container" style={{maxWidth: '900px'}}>
+        {/* Navigation / Retour Home */}
+        <div 
+          className="fade-in" 
+          style={{display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginTop: '1rem', cursor: 'pointer', padding: '0.5rem 1rem', background: 'white', borderRadius: '50px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', border: '1px solid var(--border)'}} 
+          onClick={() => { setResults(null); setStep(-1); }}
+        >
+          <Compass size={20} style={{color: 'var(--primary)'}} />
+          <strong style={{color: 'var(--primary)', fontSize: '1rem'}}>SmartStay Premium</strong>
+          <span style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>— Retour à l'accueil</span>
+        </div>
+
         {/* Interactive Map */}
-        <div className="card fade-in" style={{marginTop: '2rem', padding: '0', overflow: 'hidden', height: '400px', borderRadius: '12px'}}>
+        <div className="card fade-in" style={{marginTop: '1.5rem', padding: '0', overflow: 'hidden', height: '400px', borderRadius: '12px'}}>
           <MapContainer center={[46.0, 2.0]} zoom={4} style={{ height: '100%', width: '100%' }}>
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
