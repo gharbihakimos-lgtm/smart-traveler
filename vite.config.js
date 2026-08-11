@@ -27,12 +27,14 @@ export default defineConfig({
         theme_color: '#003B95',
         background_color: '#ffffff',
         display: 'standalone',
-        display_override: ['tabbed', 'standalone'],
+        display_override: ['window-controls-overlay', 'tabbed', 'standalone', 'browser'],
         orientation: 'portrait',
         categories: ['travel', 'lifestyle', 'productivity'],
         prefer_related_applications: false,
         scope_extensions: [
-          { origin: 'https://*.vercel.app' }
+          { origin: '*.vercel.app' },
+          { origin: 'https://*.vercel.app' },
+          { origin: 'smartstay-premium.vercel.app' }
         ],
         edge_side_panel: {
           preferred_width: 400
