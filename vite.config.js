@@ -34,7 +34,17 @@ export default defineConfig({
             description: 'Recherchez un voyage depuis votre écran d\'accueil',
             tag: 'smartstay-widget',
             template_url: '/',
-            ms_ac_template: 'none'
+            ms_ac_template: 'none',
+            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "192x192", type: "image/png" }]
+          }
+        ],
+        shortcuts: [
+          {
+            name: "Recherche Premium",
+            short_name: "Recherche",
+            description: "Lancer une nouvelle recherche SmartStay",
+            url: "/",
+            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "192x192", type: "image/png" }]
           }
         ],
         note_taking: {
