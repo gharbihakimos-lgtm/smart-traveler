@@ -27,7 +27,7 @@ export default defineConfig({
         theme_color: '#003B95',
         background_color: '#ffffff',
         display: 'standalone',
-        display_override: ['window-controls-overlay', 'tabbed', 'standalone', 'browser'],
+        display_override: ['tabbed', 'standalone'],
         orientation: 'portrait',
         categories: ['travel', 'lifestyle', 'productivity'],
         prefer_related_applications: false,
