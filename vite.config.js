@@ -28,6 +28,12 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         display_override: ['window-controls-overlay', 'tabbed'],
+        tab_strip: {
+          home_tab: 'auto',
+          new_tab_button: {
+            url: '/'
+          }
+        },
         orientation: 'portrait',
         categories: ['travel', 'lifestyle', 'productivity'],
         prefer_related_applications: false,
