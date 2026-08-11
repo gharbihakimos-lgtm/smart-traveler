@@ -10,7 +10,7 @@ export const Intro = ({ setStep }) => (
     <p style={{fontSize: '1.2rem', marginBottom: '2rem', textShadow: '0 1px 3px rgba(0,0,0,0.5)', maxWidth: '600px', margin: '0 auto 2rem auto'}}>
       L'excellence du voyage sur mesure. Définissez vos critères, nous trouvons l'exceptionnel.
     </p>
-    <button className="btn" onClick={() => setStep(1)} style={{fontSize: '1.2rem', padding: '1rem 2rem', background: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.3)'}}>
+    <button className="btn" onClick={() => setStep(0)} style={{fontSize: '1.2rem', padding: '1rem 2rem', background: 'var(--primary)', color: 'white', border: 'none', boxShadow: '0 4px 15px rgba(0,0,0,0.3)'}}>
       Commencer l'expérience <ArrowRight size={20}/>
     </button>
   </div>
