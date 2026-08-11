@@ -15,6 +15,7 @@ import { t } from './i18n';
 import HotelCard from './components/HotelCard';
 import { Intro } from './components/steps/Intro';
 import { StepChat } from './components/steps/StepChat';
+import LegalModal from './components/LegalModal';
 import { toast } from 'sonner';
 
 // Fix for missing default markers in React-Leaflet
@@ -36,6 +37,19 @@ function App() {
   const [lang, setLang] = useState('fr');
   const [darkMode, setDarkMode] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [legalType, setLegalType] = useState(null);
+
+  if (window.location.search.includes('privacy=true') || window.location.pathname === '/privacy') {
+    return (
+      <div style={{padding: '2rem', maxWidth: '800px', margin: '0 auto', color: 'var(--text-main)'}}>
+        <h1 style={{color: 'var(--primary)', marginBottom: '2rem'}}>Politique de Confidentialité</h1>
+        <p><strong>1. Données collectées :</strong> Nous pouvons demander l'accès à votre géolocalisation pour calculer les distances. Cette position est traitée localement et n'est jamais sauvegardée sur nos serveurs.</p>
+        <p><strong>2. Cookies et Stockage Local :</strong> Nous utilisons le stockage local de votre appareil (localStorage) uniquement pour conserver vos préférences (thème sombre, favoris).</p>
+        <p><strong>3. Partage de données :</strong> Vos données ne sont ni revendues, ni partagées avec des tiers à des fins publicitaires.</p>
+        <div style={{marginTop: '2rem'}}><a href="/" style={{color: 'var(--primary)', textDecoration: 'none', fontWeight: 'bold'}}>← Retour à l'accueil</a></div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (darkMode) {
@@ -689,6 +703,19 @@ function App() {
           </div>
         )}
       </div>
+
+      <footer style={{
+        textAlign: 'center', padding: '2rem', marginTop: '2rem',
+        fontSize: '0.85rem', color: 'var(--text-muted)',
+        display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap'
+      }}>
+        <span>© {new Date().getFullYear()} SmartStay Premium</span>
+        <span style={{cursor: 'pointer', textDecoration: 'underline'}} onClick={() => setLegalType('mentions')}>Mentions Légales</span>
+        <span style={{cursor: 'pointer', textDecoration: 'underline'}} onClick={() => setLegalType('cgu')}>CGU</span>
+        <span style={{cursor: 'pointer', textDecoration: 'underline'}} onClick={() => setLegalType('privacy')}>Confidentialité</span>
+      </footer>
+
+      {legalType && <LegalModal type={legalType} onClose={() => setLegalType(null)} />}
     </div>
   );
 }
