@@ -10,6 +10,11 @@ export default defineConfig({
       injectRegister: 'auto',
       manifest: {
         id: '/',
+        start_url: '/',
+        lang: 'fr',
+        dir: 'ltr',
+        iarc_rating_id: 'e84b072d-71b3-4d3e-86ae-31a8ce4e53b7',
+        related_applications: [],
         name: 'SmartStay Premium',
         short_name: 'SmartStay',
         description: 'Trouvez les meilleurs hôtels pour vos vacances.',
