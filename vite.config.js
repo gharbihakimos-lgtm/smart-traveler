@@ -71,16 +71,16 @@ export default defineConfig({
         ],
         screenshots: [
           {
-            src: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1080&q=80',
+            src: 'https://smartstay-premium.vercel.app/screenshot-wide.png',
             sizes: '1080x720',
-            type: 'image/jpeg',
+            type: 'image/png',
             form_factor: 'wide',
             label: 'Recherche de voyages Premium'
           },
           {
-            src: 'https://images.unsplash.com/photo-1542314831-c6a4d14d837e?w=720&q=80',
+            src: 'https://smartstay-premium.vercel.app/screenshot-narrow.png',
             sizes: '720x1080',
-            type: 'image/jpeg',
+            type: 'image/png',
             form_factor: 'narrow',
             label: 'Résultats SmartStay'
           }
