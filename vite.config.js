@@ -50,8 +50,8 @@ export default defineConfig({
             tag: 'smartstay-widget',
             template_url: '/',
             ms_ac_template: 'none',
-            icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }],
-            screenshots: [{ src: '/widget-screenshot.png', sizes: '1080x720', type: 'image/png', label: 'Widget' }]
+            icons: [{ src: '/icon-192.png?v=2', sizes: '192x192', type: 'image/png' }],
+            screenshots: [{ src: '/widget-screenshot.png?v=2', sizes: '1080x720', type: 'image/png', label: 'Widget' }]
           }
         ],
         shortcuts: [
@@ -60,7 +60,7 @@ export default defineConfig({
             short_name: 'Recherche',
             description: 'Lancer une nouvelle recherche',
             url: '/',
-            icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }]
+            icons: [{ src: '/icon-192.png?v=2', sizes: '192x192', type: 'image/png' }]
           }
         ],
         note_taking: {
@@ -94,13 +94,13 @@ export default defineConfig({
         },
         icons: [
           {
-            src: '/icon-192.png',
+            src: '/icon-192.png?v=2',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            src: '/icon-512.png',
+            src: '/icon-512.png?v=2',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
