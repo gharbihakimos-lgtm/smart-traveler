@@ -7,19 +7,41 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       manifest: {
+        id: '/',
         name: 'SmartStay Premium',
         short_name: 'SmartStay',
         description: 'Trouvez les meilleurs hôtels pour vos vacances.',
         theme_color: '#003B95',
         background_color: '#ffffff',
         display: 'standalone',
+        display_override: ['window-controls-overlay', 'standalone'],
+        orientation: 'portrait',
+        categories: ['travel', 'lifestyle', 'productivity'],
+        prefer_related_applications: false,
         icons: [
           {
             src: 'https://cdn-icons-png.flaticon.com/512/3168/3168688.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
+          }
+        ],
+        screenshots: [
+          {
+            src: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1080&q=80',
+            sizes: '1080x720',
+            type: 'image/jpeg',
+            form_factor: 'wide',
+            label: 'Recherche de voyages Premium'
+          },
+          {
+            src: 'https://images.unsplash.com/photo-1542314831-c6a4d14d837e?w=720&q=80',
+            sizes: '720x1080',
+            type: 'image/jpeg',
+            form_factor: 'narrow',
+            label: 'Résultats SmartStay'
           }
         ]
       }
