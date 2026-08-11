@@ -27,12 +27,12 @@ export default defineConfig({
         theme_color: '#003B95',
         background_color: '#ffffff',
         display: 'standalone',
-        display_override: ['tabbed', 'window-controls-overlay', 'standalone'],
+        display_override: ['tabbed', 'standalone'],
         orientation: 'portrait',
         categories: ['travel', 'lifestyle', 'productivity'],
         prefer_related_applications: false,
         scope_extensions: [
-          { origin: '*.vercel.app' }
+          { origin: 'https://*.vercel.app' }
         ],
         edge_side_panel: {
           preferred_width: 400
@@ -44,16 +44,17 @@ export default defineConfig({
             tag: 'smartstay-widget',
             template_url: '/',
             ms_ac_template: 'none',
-            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "512x512", type: "image/png" }]
+            icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }],
+            screenshots: [{ src: '/widget-screenshot.png', sizes: '1080x720', type: 'image/png', label: 'Widget' }]
           }
         ],
         shortcuts: [
           {
-            name: "Recherche Premium",
-            short_name: "Recherche",
-            description: "Lancer une nouvelle recherche SmartStay",
-            url: "/",
-            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "512x512", type: "image/png" }]
+            name: 'Recherche Premium',
+            short_name: 'Recherche',
+            description: 'Lancer une nouvelle recherche',
+            url: '/',
+            icons: [{ src: '/icon-192.png', sizes: '192x192', type: 'image/png' }]
           }
         ],
         note_taking: {
@@ -87,7 +88,13 @@ export default defineConfig({
         },
         icons: [
           {
-            src: 'https://cdn-icons-png.flaticon.com/512/3168/3168688.png',
+            src: '/icon-192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any maskable'
+          },
+          {
+            src: '/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
@@ -95,18 +102,18 @@ export default defineConfig({
         ],
         screenshots: [
           {
-            src: 'https://smartstay-premium.vercel.app/screenshot-wide.png',
+            src: '/screenshot-wide.png',
             sizes: '1080x720',
             type: 'image/png',
             form_factor: 'wide',
-            label: 'Recherche de voyages Premium'
+            label: 'Recherche'
           },
           {
-            src: 'https://smartstay-premium.vercel.app/screenshot-narrow.png',
+            src: '/screenshot-narrow.png',
             sizes: '720x1080',
             type: 'image/png',
             form_factor: 'narrow',
-            label: 'Résultats SmartStay'
+            label: 'Résultats'
           }
         ]
       }

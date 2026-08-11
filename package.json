@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && echo \"self.addEventListener('sync', ()=>{}); self.addEventListener('periodicsync', ()=>{});\" >> dist/sw.js",
+    "build": "vite build && echo \"self.addEventListener('sync', ()=>{}); self.addEventListener('periodicsync', ()=>{}); self.addEventListener('push', ()=>{}); self.addEventListener('notificationclick', ()=>{});\" >> dist/sw.js",
     "lint": "oxlint",
     "preview": "vite preview"
   },
