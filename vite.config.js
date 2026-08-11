@@ -32,9 +32,7 @@ export default defineConfig({
         categories: ['travel', 'lifestyle', 'productivity'],
         prefer_related_applications: false,
         scope_extensions: [
-          { origin: '*.vercel.app' },
-          { origin: 'https://*.vercel.app' },
-          { origin: 'smartstay-premium.vercel.app' }
+          { origin: 'https://auth.smartstay-premium.vercel.app' }
         ],
         edge_side_panel: {
           preferred_width: 400
