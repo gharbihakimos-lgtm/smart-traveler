@@ -14,17 +14,26 @@ export default defineConfig({
         lang: 'fr',
         dir: 'ltr',
         iarc_rating_id: 'e84b072d-71b3-4d3e-86ae-31a8ce4e53b7',
-        related_applications: [],
+        related_applications: [
+          {
+            platform: 'play',
+            url: 'https://play.google.com/store/apps/details?id=com.smartstay.premium',
+            id: 'com.smartstay.premium'
+          }
+        ],
         name: 'SmartStay Premium',
         short_name: 'SmartStay',
         description: 'Trouvez les meilleurs hôtels pour vos vacances.',
         theme_color: '#003B95',
         background_color: '#ffffff',
         display: 'standalone',
-        display_override: ['window-controls-overlay', 'tabbed', 'standalone'],
+        display_override: ['tabbed', 'window-controls-overlay', 'standalone'],
         orientation: 'portrait',
         categories: ['travel', 'lifestyle', 'productivity'],
         prefer_related_applications: false,
+        scope_extensions: [
+          { origin: '*.vercel.app' }
+        ],
         edge_side_panel: {
           preferred_width: 400
         },
@@ -35,7 +44,7 @@ export default defineConfig({
             tag: 'smartstay-widget',
             template_url: '/',
             ms_ac_template: 'none',
-            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "192x192", type: "image/png" }]
+            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "512x512", type: "image/png" }]
           }
         ],
         shortcuts: [
@@ -44,7 +53,7 @@ export default defineConfig({
             short_name: "Recherche",
             description: "Lancer une nouvelle recherche SmartStay",
             url: "/",
-            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "192x192", type: "image/png" }]
+            icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3168/3168688.png", sizes: "512x512", type: "image/png" }]
           }
         ],
         note_taking: {
