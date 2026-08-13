@@ -481,6 +481,53 @@ body.dark .btn-secondary:hover {
   background: #334155;
 }
 
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem 0.5rem;
+  }
+  .card {
+    padding: 1.5rem;
+    border-radius: 20px;
+    width: 100%;
+  }
+  h1 {
+    font-size: 1.75rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+  .btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .form-input {
+    padding: 0.875rem 1rem;
+  }
+  .result-header {
+    padding: 1.5rem;
+  }
+  .score-badge {
+    position: static;
+    display: inline-flex;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  }
+  .radio-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .radio-card {
+    padding: 1rem 0.5rem;
+  }
+  .counter {
+    gap: 0.75rem;
+    justify-content: space-between;
+  }
+}
+
 /* --- PDF PRINT STYLES --- */
 @media print {
   body {
