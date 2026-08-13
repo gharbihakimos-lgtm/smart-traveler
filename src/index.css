@@ -481,8 +481,67 @@ body.dark .btn-secondary:hover {
   background: #334155;
 }
 
+/* App Header Navbar */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: var(--gradient-main);
+  color: white;
+  border-radius: 24px;
+  width: 100%;
+  margin-bottom: 2rem;
+  box-shadow: var(--soft-shadow);
+}
+
+.app-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.booking-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Leaflet Dark Mode Popups */
+body.dark .leaflet-popup-content-wrapper,
+body.dark .leaflet-popup-tip {
+  background: #1e293b;
+  color: #f8fafc;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 18px;
+    align-items: stretch;
+    text-align: center;
+  }
+  .app-header-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .booking-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .booking-links .btn,
+  .booking-links .btn-secondary {
+    width: 100%;
+    margin-bottom: 0;
+    text-align: center;
+  }
   .app-container {
     padding: 1rem 0.5rem;
   }

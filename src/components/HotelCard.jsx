@@ -116,7 +116,7 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
         
         <div style={{marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)'}}>
           <p style={{textAlign: 'center', marginBottom: '1rem', fontWeight: 600, color: 'var(--text-main)'}}>{t('availabilities', lang)}</p>
-          <div style={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem'}}>
+          <div className="booking-links">
             <a href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(res.name + ' ' + res.location)}`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#003B95', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(0, 59, 149, 0.3)'}}>
               Booking.com
             </a>

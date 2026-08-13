@@ -625,12 +625,12 @@ function App() {
 
   return (
     <div className="app-container">
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.5rem', background: 'var(--primary)', color: 'white', borderRadius: '24px', width: '100%', marginBottom: '2rem', boxShadow: 'var(--soft-shadow)'}} className="no-print">
+      <div className="app-header no-print">
         <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 700, fontSize: '1.25rem'}}>
           <Compass size={24}/> {t('appTitle', lang)}
         </div>
         
-        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+        <div className="app-header-actions">
           <div style={{display: 'flex', gap: '0.5rem', color: 'white'}}>
             <button onClick={() => setCurrency(c => c === 'EUR' ? 'USD' : c === 'USD' ? 'GBP' : 'EUR')} style={{background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.5rem 0.75rem', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
               {currency === 'EUR' ? <Euro size={18}/> : currency === 'USD' ? <DollarSign size={18}/> : <PoundSterling size={18}/>} {currency}

@@ -45,14 +45,14 @@ export default function LegalModal({ type, onClose }) {
       backdropFilter: 'blur(4px)'
     }}>
       <div className="card fade-in" style={{
-        background: 'var(--bg-main)', color: 'var(--text-main)',
+        background: 'var(--card-bg)', color: 'var(--text-main)',
         maxWidth: '600px', width: '100%', borderRadius: '12px',
         maxHeight: '85vh', overflowY: 'auto', position: 'relative',
         boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
       }}>
         <button onClick={onClose} style={{
           position: 'absolute', top: '1rem', right: '1rem',
-          background: 'var(--surface)', border: 'none', color: 'var(--text-main)', 
+          background: 'var(--border)', border: 'none', color: 'var(--text-main)', 
           cursor: 'pointer', borderRadius: '50%', padding: '0.5rem', display: 'flex'
         }}>
           <X size={20} />

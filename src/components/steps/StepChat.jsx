@@ -74,7 +74,7 @@ export const StepChat = ({ setStep, setData }) => {
   };
 
   return (
-    <div className="card fade-in" style={{maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', height: '60vh', maxHeight: '600px'}}>
+    <div className="fade-in" style={{maxWidth: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', height: '60vh', maxHeight: '600px'}}>
       <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem'}}>
         <div style={{background: 'var(--primary)', color: 'white', padding: '0.75rem', borderRadius: '50%'}}>
           <Bot size={24} />
@@ -89,20 +89,20 @@ export const StepChat = ({ setStep, setData }) => {
         {chatMessages.map((msg, i) => (
           <div key={i} className="fade-in" style={{
             alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-            background: msg.role === 'user' ? 'var(--primary)' : '#f1f5f9',
+            background: msg.role === 'user' ? 'var(--gradient-main)' : 'var(--border)',
             color: msg.role === 'user' ? 'white' : 'var(--text-main)',
             padding: '1rem',
             borderRadius: '16px',
             borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
             borderBottomLeftRadius: msg.role === 'assistant' ? '4px' : '16px',
-            maxWidth: '80%',
+            maxWidth: '85%',
             boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
           }}>
             {msg.content}
           </div>
         ))}
         {isThinking && (
-          <div className="fade-in" style={{alignSelf: 'flex-start', background: '#f1f5f9', padding: '1rem', borderRadius: '16px', borderBottomLeftRadius: '4px'}}>
+          <div className="fade-in" style={{alignSelf: 'flex-start', background: 'var(--border)', color: 'var(--text-main)', padding: '1rem', borderRadius: '16px', borderBottomLeftRadius: '4px'}}>
             <span className="typing-dot"></span><span className="typing-dot"></span><span className="typing-dot"></span>
           </div>
         )}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Compass, ArrowRight } from 'lucide-react';
 
 export const Intro = ({ setStep }) => (
-  <div className="card fade-in" style={{textAlign: 'center', backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', color: 'white', padding: '4rem 2rem', borderRadius: '16px'}}>
+  <div className="fade-in" style={{textAlign: 'center', backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80")', backgroundSize: 'cover', backgroundPosition: 'center', color: 'white', padding: '4rem 2rem', borderRadius: '24px'}}>
     <div style={{marginBottom: '2rem', color: 'white', background: 'rgba(0,0,0,0.3)', display: 'inline-block', padding: '1rem', borderRadius: '50%'}}>
       <Compass size={64} />
     </div>
