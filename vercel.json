@@ -1,3 +1,4 @@
 {
-  "name": "smartstay-premium"
+  "name": "smartstay-premium",
+  "cleanUrls": true
 }
