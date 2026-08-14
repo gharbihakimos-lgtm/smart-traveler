@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, ShieldCheck, Heart, CloudSun, ArrowLeft, ArrowRight, MessageSquare, CalendarCheck } from 'lucide-react';
+import { 
+  MapPin, ShieldCheck, Heart, CloudSun, ArrowLeft, ArrowRight, 
+  MessageSquare, CalendarCheck, Leaf, Bell, Compass, Users 
+} from 'lucide-react';
+import { toast } from 'sonner';
 import ReviewsModal from './ReviewsModal';
 import BookingModal from './BookingModal';
+import ItineraryModal from './ItineraryModal';
+import { calculateEcoScore } from '../utils/eco';
 
 export default function HotelCard({ res, index, isFavorite, toggleFavorite, formatPrice, t, lang }) {
   const [galleryIdx, setGalleryIdx] = useState(0);
   const [weather, setWeather] = useState(null);
   const [showReviews, setShowReviews] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+  const [showItinerary, setShowItinerary] = useState(false);
+  const [isPriceAlertOn, setIsPriceAlertOn] = useState(false);
 
   const images = res.images || (res.imageUrl ? [res.imageUrl] : ['https://images.unsplash.com/photo-1542314831-c6a4d142104d']);
+  const eco = calculateEcoScore(res.distanceKm);
 
   useEffect(() => {
     if (res.lat && res.lng) {
@@ -24,6 +33,18 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
     }
   }, [res.lat, res.lng]);
 
+  const togglePriceAlert = () => {
+    setIsPriceAlertOn(prev => {
+      const nextState = !prev;
+      if (nextState) {
+        toast.success(`Alerte baisse de prix activée pour ${res.name} ! 🔔`);
+      } else {
+        toast.info(`Alerte prix désactivée.`);
+      }
+      return nextState;
+    });
+  };
+
   const nextImage = (e) => { e.stopPropagation(); setGalleryIdx((galleryIdx + 1) % images.length); };
   const prevImage = (e) => { e.stopPropagation(); setGalleryIdx((galleryIdx - 1 + images.length) % images.length); };
 
@@ -34,7 +55,7 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
       <div className="result-header" style={{
         position: 'relative',
         padding: '2rem',
-        minHeight: index === 0 ? '250px' : '200px',
+        minHeight: index === 0 ? '260px' : '210px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
@@ -53,9 +74,13 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
           </div>
         )}
 
-        <div style={{position: 'absolute', top: '1rem', left: '1rem', zIndex: 10}}>
-          <button onClick={() => toggleFavorite(res.id)} style={{background: 'transparent', border: 'none', cursor: 'pointer', color: isFavorite ? '#ef4444' : 'rgba(255,255,255,0.7)', transition: 'transform 0.2s', padding: 0}}>
-            <Heart size={32} fill={isFavorite ? '#ef4444' : 'none'} />
+        {/* Favorite & Price Alert Actions */}
+        <div style={{position: 'absolute', top: '1rem', left: '1rem', zIndex: 10, display: 'flex', gap: '0.75rem'}}>
+          <button onClick={() => toggleFavorite(res.id)} style={{background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', cursor: 'pointer', color: isFavorite ? '#ef4444' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+            <Heart size={24} fill={isFavorite ? '#ef4444' : 'none'} />
+          </button>
+          <button onClick={togglePriceAlert} style={{background: 'rgba(0,0,0,0.4)', border: 'none', borderRadius: '50%', width: '42px', height: '42px', cursor: 'pointer', color: isPriceAlertOn ? '#f59e0b' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center'}} title="Alerte baisse de prix">
+            <Bell size={22} fill={isPriceAlertOn ? '#f59e0b' : 'none'} />
           </button>
         </div>
 
@@ -65,11 +90,11 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
               <span style={{fontWeight:600, color: '#fbbf24', textTransform:'uppercase', letterSpacing:'0.05em', fontSize: '0.85rem'}}>🏆 Recommandation #1</span>
             </div>
           )}
-          <h1 style={{color: 'white', fontSize: index === 0 ? '2rem' : '1.5rem', margin: '0', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap'}}>
+          <h1 style={{color: 'white', fontSize: index === 0 ? '2rem' : '1.5rem', margin: '0', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap'}}>
             {res.name}
             {weather !== null && <span style={{fontSize: '0.9rem', background: 'rgba(0,0,0,0.5)', padding: '0.2rem 0.5rem', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '0.3rem'}}><CloudSun size={16}/> {weather}°C</span>}
           </h1>
-          <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', marginTop: '0.2rem'}}><MapPin size={18} style={{verticalAlign:'text-bottom'}}/> {res.location}</p>
+          <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1.05rem', marginTop: '0.2rem'}}><MapPin size={18} style={{verticalAlign:'text-bottom'}}/> {res.location}</p>
         </div>
         
         <div className="score-badge" style={{top: '1.5rem', right: '1.5rem', fontSize: index === 0 ? '1.25rem' : '1rem', background: 'rgba(0,0,0,0.5)', borderColor: 'rgba(255,255,255,0.2)', zIndex: 5}}>
@@ -79,6 +104,30 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
       
       {/* Body Content */}
       <div className="result-card-body" style={{padding: '2rem'}}>
+        
+        {/* Pro Badges Row: Eco-Score & Weather Seasonality */}
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          {/* Eco-Score Badge */}
+          <div style={{
+            background: 'rgba(16, 185, 129, 0.1)', border: `1px solid ${eco.badgeColor}`,
+            padding: '0.4rem 0.85rem', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600,
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)'
+          }}>
+            <Leaf size={16} style={{ color: eco.badgeColor }} />
+            <span>Éco-Score <strong style={{ color: eco.badgeColor }}>{eco.scoreGrade}</strong> ({eco.co2Kg} kg CO2e)</span>
+          </div>
+
+          {/* Weather Seasonality Widget */}
+          <div style={{
+            background: 'rgba(14, 165, 233, 0.1)', border: '1px solid rgba(14, 165, 233, 0.3)',
+            padding: '0.4rem 0.85rem', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 600,
+            display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-main)'
+          }}>
+            <CloudSun size={16} style={{ color: '#0ea5e9' }} />
+            <span>Saison idéale : Mai - Octobre</span>
+          </div>
+        </div>
+
         {res.warnings && res.warnings.length > 0 && (
           <div style={{background: 'rgba(255, 170, 0, 0.1)', borderLeft: '4px solid var(--warning)', padding: '1rem', marginBottom: '1.5rem', borderRadius: '0 8px 8px 0'}}>
             <h4 style={{margin: 0, color: 'var(--warning)', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
@@ -96,6 +145,12 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
             <div style={{fontSize: '2rem', fontWeight: 'bold', color: 'var(--text-main)'}}>
               {formatPrice(res.basePricePerNight)} <span style={{fontSize: '1rem', color: 'var(--text-muted)', fontWeight: 'normal'}}>/ nuit</span>
             </div>
+
+            {/* Per Person Cost Splitter */}
+            <div style={{ marginTop: '0.3rem', fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Users size={14} /> soit ~{formatPrice(Math.round(res.basePricePerNight / 2))} / pers. / nuit
+            </div>
+
             {res.distanceKm && (
               <p style={{color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem'}}>
                 {res.distanceKm <= 3 ? '🚶‍♂️ À pied / 🚲 Vélo' : 
@@ -120,22 +175,30 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
           </div>
         </div>
 
-        {/* Interactive Action Buttons (Reviews & Custom Booking) */}
-        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+        {/* Interactive Action Buttons (Reviews, Itinerary & Custom Booking) */}
+        <div style={{ marginTop: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>
           <button
             className="btn-secondary"
-            style={{ flex: 1, minWidth: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.85rem' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.85rem', fontSize: '0.9rem' }}
             onClick={() => setShowReviews(true)}
           >
-            <MessageSquare size={18} /> Avis & Notes Détaillées
+            <MessageSquare size={18} /> Avis & Notes
+          </button>
+
+          <button
+            className="btn-secondary"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.85rem', fontSize: '0.9rem' }}
+            onClick={() => setShowItinerary(true)}
+          >
+            <Compass size={18} style={{ color: 'var(--primary)' }} /> Itinéraire IA (3 Jours)
           </button>
           
           <button
             className="btn"
-            style={{ flex: 1, minWidth: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.85rem' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', padding: '0.85rem', fontSize: '0.9rem' }}
             onClick={() => setShowBooking(true)}
           >
-            <CalendarCheck size={18} /> Réserver / Choisir ma chambre
+            <CalendarCheck size={18} /> Réserver / Chambres
           </button>
         </div>
         
@@ -180,6 +243,7 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
       {/* Render Modals */}
       {showReviews && <ReviewsModal hotel={res} onClose={() => setShowReviews(false)} />}
       {showBooking && <BookingModal hotel={res} formatPrice={formatPrice} onClose={() => setShowBooking(false)} />}
+      {showItinerary && <ItineraryModal hotel={res} onClose={() => setShowItinerary(false)} />}
     </div>
   );
 }

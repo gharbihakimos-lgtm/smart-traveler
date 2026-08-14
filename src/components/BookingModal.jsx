@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Check, Bed, Utensils, Calendar, ShieldCheck, Download, Sparkles } from 'lucide-react';
+import { X, Check, Bed, Utensils, Calendar as CalendarIcon, ShieldCheck, Download, Mail, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 
 export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onClose }) {
   const roomTypes = hotel.roomTypes || [
@@ -16,10 +17,12 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
   ];
 
   const [selectedRoom, setSelectedRoom] = useState(roomTypes[0]);
-  const [selectedMeal, setSelectedMeal] = useState(mealPlans[1]); // Breakfast default
+  const [selectedMeal, setSelectedMeal] = useState(mealPlans[1]);
   const [guestName, setGuestName] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [isBooked, setIsBooked] = useState(false);
   const [bookingRef, setBookingRef] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   // Calculations
   const roomNightPrice = Math.round(hotel.basePricePerNight * selectedRoom.priceMultiplier);
@@ -27,6 +30,7 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
   const totalPricePerNight = roomNightPrice + mealNightPrice;
   const grandTotal = totalPricePerNight * nightsCount;
   const touristTax = Math.round(nightsCount * 2.5);
+  const finalPrice = grandTotal + touristTax;
 
   const handleConfirm = (e) => {
     e.preventDefault();
@@ -34,11 +38,27 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
       toast.error("Veuillez saisir le nom du voyageur principal.");
       return;
     }
+    if (!guestEmail.trim() || !guestEmail.includes('@')) {
+      toast.error("Veuillez saisir une adresse e-mail valide pour recevoir votre confirmation.");
+      return;
+    }
 
     const ref = 'SMART-' + Math.floor(100000 + Math.random() * 900000);
     setBookingRef(ref);
     setIsBooked(true);
-    toast.success("Réservation confirmée avec succès !");
+    setEmailSent(true);
+    toast.success(`Réservation confirmée ! E-mail envoyé à ${guestEmail}`);
+  };
+
+  const handleResendEmail = () => {
+    toast.success(`E-mail de confirmation renvoyé à ${guestEmail} ! 📩`);
+    setEmailSent(true);
+  };
+
+  const calendarEvent = {
+    title: `Séjour SmartStay : ${hotel.name}`,
+    details: `Réservation N° ${bookingRef} pour ${guestName}. Hébergement: ${selectedRoom.name}, Formule: ${selectedMeal.name}.`,
+    location: hotel.location || 'Hôtel'
   };
 
   return (
@@ -150,20 +170,36 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
               </div>
             </div>
 
-            {/* 3. Traveler Info */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.4rem' }}>
-                Nom & Prénom du voyageur principal *
-              </label>
-              <input
-                type="text"
-                className="form-input"
-                placeholder="Ex: Jean Dupont"
-                value={guestName}
-                onChange={e => setGuestName(e.target.value)}
-                required
-                style={{ padding: '0.75rem 1rem' }}
-              />
+            {/* 3. Traveler Info & Email */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  Nom & Prénom *
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Ex: Jean Dupont"
+                  value={guestName}
+                  onChange={e => setGuestName(e.target.value)}
+                  required
+                  style={{ padding: '0.75rem 1rem' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.4rem' }}>
+                  Adresse E-mail de confirmation *
+                </label>
+                <input
+                  type="email"
+                  className="form-input"
+                  placeholder="Ex: jean.dupont@email.com"
+                  value={guestEmail}
+                  onChange={e => setGuestEmail(e.target.value)}
+                  required
+                  style={{ padding: '0.75rem 1rem' }}
+                />
+              </div>
             </div>
 
             {/* 4. Price Calculation Breakdown Box */}
@@ -189,15 +225,20 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 paddingTop: '0.75rem', borderTop: '2px dashed rgba(0,0,0,0.1)'
               }}>
-                <span style={{ fontSize: '1.1rem', fontWeight: 700 }}>Total Estimé du Séjour</span>
+                <div>
+                  <span style={{ fontSize: '1.1rem', fontWeight: 700, display: 'block' }}>Total Estimé du Séjour</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>
+                    soit {formatPrice(Math.round(finalPrice / 2))} / personne (pour 2 pers)
+                  </span>
+                </div>
                 <span style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--primary)' }}>
-                  {formatPrice(grandTotal + touristTax)}
+                  {formatPrice(finalPrice)}
                 </span>
               </div>
             </div>
 
             <button className="btn" type="submit" style={{ width: '100%', padding: '1rem', fontSize: '1.1rem' }}>
-              <ShieldCheck size={20} /> Confirmer la réservation
+              <ShieldCheck size={20} /> Confirmer & Recevoir par E-mail
             </button>
           </form>
         ) : (
@@ -219,6 +260,34 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
               Votre demande a bien été enregistrée pour <strong>{hotel.name}</strong>.
             </p>
 
+            {/* Email Notification Banner */}
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--success)',
+              padding: '0.85rem 1.25rem', borderRadius: '14px', marginBottom: '1.5rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem',
+              textAlign: 'left'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Mail size={22} style={{ color: 'var(--success)' }} />
+                <div>
+                  <strong style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+                    Confirmation envoyée par e-mail
+                  </strong>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                    Reçu transmis à <strong>{guestEmail}</strong>
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleResendEmail}
+                style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+              >
+                <Send size={14} /> Renvoyer l'e-mail
+              </button>
+            </div>
+
             <div style={{
               background: 'var(--border)', padding: '1.25rem', borderRadius: '16px',
               textAlign: 'left', marginBottom: '1.5rem', borderLeft: '4px solid var(--primary)'
@@ -238,8 +307,34 @@ export default function BookingModal({ hotel, nightsCount = 5, formatPrice, onCl
               <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.08)' }}>
                 <span style={{ fontWeight: 700 }}>Total Règlement :</span>
                 <span style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '1.2rem' }}>
-                  {formatPrice(grandTotal + touristTax)}
+                  {formatPrice(finalPrice)}
                 </span>
+              </div>
+            </div>
+
+            {/* Calendar Export Section */}
+            <div style={{ background: 'rgba(20, 184, 166, 0.05)', padding: '1rem', borderRadius: '14px', marginBottom: '1.5rem', border: '1px solid var(--border)' }}>
+              <strong style={{ display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: 'var(--primary)' }}>
+                📅 Synchroniser avec mon agenda
+              </strong>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <a
+                  href={getGoogleCalendarUrl(calendarEvent)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-secondary"
+                  style={{ flex: 1, minWidth: '160px', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+                >
+                  <CalendarIcon size={16} /> Google Calendar
+                </a>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  style={{ flex: 1, minWidth: '160px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.85rem' }}
+                  onClick={() => downloadIcsFile(calendarEvent)}
+                >
+                  <Download size={16} /> Fichier iCal (.ics)
+                </button>
               </div>
             </div>
 
