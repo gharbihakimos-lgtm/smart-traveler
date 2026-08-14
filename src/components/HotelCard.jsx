@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   MapPin, ShieldCheck, Heart, CloudSun, ArrowLeft, ArrowRight, 
-  MessageSquare, CalendarCheck, Leaf, Bell, Compass, Users 
+  MessageSquare, CalendarCheck, Leaf, Bell, Compass, Users, Lightbulb, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { toast } from 'sonner';
 import ReviewsModal from './ReviewsModal';
@@ -16,6 +16,7 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
   const [showBooking, setShowBooking] = useState(false);
   const [showItinerary, setShowItinerary] = useState(false);
   const [isPriceAlertOn, setIsPriceAlertOn] = useState(false);
+  const [showTips, setShowTips] = useState(false);
 
   const images = res.images || (res.imageUrl ? [res.imageUrl] : ['https://images.unsplash.com/photo-1542314831-c6a4d142104d']);
   const eco = calculateEcoScore(res.distanceKm);
@@ -174,6 +175,49 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
             </ul>
           </div>
         </div>
+
+        {/* Destination Tips Accordion */}
+        {res.tips && res.tips.length > 0 && (
+          <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
+            <button
+              onClick={() => setShowTips(prev => !prev)}
+              style={{
+                width: '100%', background: showTips ? 'rgba(20,184,166,0.07)' : 'var(--border)',
+                border: `1px solid ${showTips ? 'var(--primary)' : 'transparent'}`,
+                borderRadius: '16px', padding: '0.9rem 1.25rem',
+                cursor: 'pointer', display: 'flex', alignItems: 'center',
+                justifyContent: 'space-between', transition: 'all 0.25s ease'
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.95rem', color: showTips ? 'var(--primary)' : 'var(--text-main)' }}>
+                <Lightbulb size={18} style={{ color: '#f59e0b' }} />
+                5 Conseils pour cette destination
+              </span>
+              {showTips ? <ChevronUp size={18} style={{ color: 'var(--primary)' }} /> : <ChevronDown size={18} style={{ color: 'var(--text-muted)' }} />}
+            </button>
+
+            {showTips && (
+              <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '1rem' }}>
+                {res.tips.map((tip, i) => (
+                  <div key={i} style={{
+                    background: 'var(--border)', borderRadius: '14px',
+                    padding: '0.9rem 1.1rem',
+                    display: 'flex', gap: '0.9rem', alignItems: 'flex-start',
+                    borderLeft: '3px solid var(--primary)'
+                  }}>
+                    <span style={{ fontSize: '1.4rem', lineHeight: 1, flexShrink: 0 }}>{tip.icon}</span>
+                    <div>
+                      <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--primary)', display: 'block', marginBottom: '0.2rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        {tip.label}
+                      </span>
+                      <p style={{ margin: 0, fontSize: '0.88rem', color: 'var(--text-main)', lineHeight: 1.5 }}>{tip.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Interactive Action Buttons (Reviews, Itinerary & Custom Booking) */}
         <div style={{ marginTop: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.75rem' }}>

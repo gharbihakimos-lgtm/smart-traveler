@@ -18,6 +18,13 @@
       "service": 9.0,
       "value": 8.9
     },
+    "tips": [
+      { "icon": "🚗", "label": "Transport", "text": "Louez une voiture depuis Gérone (aéroport) — comptez 1h de route. Le train Rennes→Barcelone + bus est aussi une option éco-friendly (11h)." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "Goûtez la Fideuà (paella aux vermicelles), le Pa amb tomàquet (pain à la tomate), et le Crema catalana — spécialités incontournables de Catalogne." },
+      { "icon": "🕐", "label": "Meilleure période", "text": "Préférez juin ou septembre : moins de monde qu'en juillet-août, eau chaude et prix 20% inférieurs." },
+      { "icon": "💶", "label": "Budget local", "text": "Repas dans une bodega locale : 12–18€/pers. Évitez les restaurants face à la plage, souvent 2x plus chers." },
+      { "icon": "🗺️", "label": "Bon plan", "text": "Visitez le Parc Naturel du Cap de Creus à 40 min : criques sauvages, falaises spectaculaires et points de snorkeling exceptionnels." }
+    ],
     "poolScore": 5,
     "beachScore": 5,
     "cleanScore": 5,
@@ -80,6 +87,13 @@
       "service": 8.6,
       "value": 9.1
     },
+    "tips": [
+      { "icon": "🚗", "label": "Transport", "text": "Voiture fortement recommandée depuis Rennes (~3h30). Privilégiez l'A10 puis la D652 pour accéder à la côte landaise. Aucun transport en commun efficace sur place." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "Les Huîtres du Bassin d'Arcachon (à 45 min), le Foie gras landais, la Lamproie à la bordelaise et la Tarte aux pruneaux sont à ne pas manquer." },
+      { "icon": "🏄", "label": "Activité phare", "text": "Les Landes sont la capitale du surf en France ! Des cours pour débutants sont disponibles à Hossegor et Capbreton dès 25€/session." },
+      { "icon": "💶", "label": "Budget local", "text": "Achetez vos provisions au marché local de Capbreton ou Hossegor (mardi/vendredi matin) : 40% moins cher que les épiceries de plage." },
+      { "icon": "🌲", "label": "Bon plan", "text": "Explorez la forêt des Landes à vélo — le camping loue des VTT. Piste cyclable jusqu'à l'Étang de Léon (~12 km de route balisée)." }
+    ],
     "poolScore": 5,
     "beachScore": 3,
     "cleanScore": 4,
@@ -136,6 +150,13 @@
       "service": 9.2,
       "value": 9.0
     },
+    "tips": [
+      { "icon": "✈️", "label": "Transport", "text": "Vol direct Nantes/Rennes→Barcelone en 1h45 (~80–150€). Depuis l'aéroport de Barcelone, bus direct Aerobús + train RENFE jusqu'à Salou (1h). Inutile de louer une voiture : tout est accessible à pied." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "Essayez la Paella au restaurant El Rancho (face à la plage), la Sangria maison et les Patatas bravas. Le marché couvert de Reus (10 min) est parfait pour les produits locaux." },
+      { "icon": "🎡", "label": "Bon plan famille", "text": "PortAventura World est à 5 min à pied ! Réservez les billets en ligne 48h avant pour économiser jusqu'à 30% sur le tarif guichet." },
+      { "icon": "💶", "label": "Budget local", "text": "Le Menu del Día (déjeuner complet entrée+plat+dessert+boisson) coûte 10–14€ dans les restaurants pour locaux. Cherchez les panneaux loin du front de mer." },
+      { "icon": "🌅", "label": "Astuce séjour", "text": "Louez des vélos électriques (15€/j) pour longer la Via Verde côtière jusqu'à Cambrils — 12 km de piste balisée avec vue mer." }
+    ],
     "poolScore": 3,
     "beachScore": 5,
     "cleanScore": 5,
@@ -193,6 +214,13 @@
       "service": 8.1,
       "value": 8.0
     },
+    "tips": [
+      { "icon": "🚗", "label": "Transport", "text": "1h30 depuis Rennes en voiture via la N12. Alternative : train Rennes→Guingamp puis navette. Avoir une voiture sur place est un vrai plus pour explorer la côte." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "La Galette de sarrasin au beurre salé, les Huîtres de Cancale, le Kouign-amann (gâteau breton) et le cidre artisanal local sont absolument incontournables." },
+      { "icon": "🦀", "label": "Activité phare", "text": "Partez à marée basse ramasser des palourdes, moules et coques — activité gratuite et familiale inoubliable sur les plages bretonnes." },
+      { "icon": "💶", "label": "Budget local", "text": "Les crêperies de village proposent des galettes complètes pour 6–9€. Évitez les adresses en bord de mer, souvent 2x plus chères pour la même qualité." },
+      { "icon": "🗺️", "label": "Bon plan", "text": "Le GR34, sentier des Douaniers, longe tout le littoral breton. Chaussez des bonnes chaussures et partez 2h au lever du soleil pour des panoramas à couper le souffle." }
+    ],
     "poolScore": 4,
     "beachScore": 4,
     "cleanScore": 3,
@@ -250,6 +278,13 @@
       "service": 7.9,
       "value": 7.5
     },
+    "tips": [
+      { "icon": "🚆", "label": "Transport", "text": "Train TGV Rennes→Paris Montparnasse en 1h30 (~40–80€). Sur place, le pass Navigo Semaine (30€) couvre métro + RER illimités. Oubliez la voiture à Paris !" },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "L'Onion soup au Bouillon Chartier (15€, legendary), le Steak-frites brasserie, le Croque-monsieur de comptoir et les Macarons de Ladurée pour le dessert." },
+      { "icon": "🎟️", "label": "Bon plan culture", "text": "Musées nationaux gratuits le 1er dimanche du mois (Louvre, Musée d'Orsay). Réservez votre créneau en ligne 48h avant pour éviter les files d'attente." },
+      { "icon": "💶", "label": "Budget local", "text": "Boulangerie le matin pour croissant + café : 3–4€. Les restos du quartier du Marais et Oberkampf proposent de bonnes tables à 15–20€/pers. le midi." },
+      { "icon": "🌅", "label": "Astuce insolite", "text": "Montez à Montmartre au lever du soleil (5h30 en été) : la vue sur Paris depuis le parvis du Sacré-Cœur est magique sans aucune foule. Totalement gratuit." }
+    ],
     "poolScore": 1,
     "beachScore": 1,
     "cleanScore": 4,
@@ -307,6 +342,13 @@
       "service": 8.8,
       "value": 9.4
     },
+    "tips": [
+      { "icon": "🚗", "label": "Transport", "text": "Voiture indispensable (~5h depuis Rennes via A71/A75). Attention : les routes ardéchoises sont sinueuses et étroites — prévoyez des temps de trajet plus longs que le GPS." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "La Pélardon (fromage de chèvre AOP), les Châtaignes rôties d'Ardèche, le Picodon et la Charcuterie ardéchoise au marché local de Vals-les-Bains." },
+      { "icon": "🛶", "label": "Activité phare", "text": "Canoë-kayak sur les gorges de l'Ardèche entre Vallon-Pont-d'Arc et Saint-Martin (~30 km). Réservez votre embarcation et navette retour la veille (35–50€/pers)." },
+      { "icon": "💶", "label": "Budget local", "text": "Faites vos courses à l'Intermarché de Ruoms (~15 min) avant d'arriver — les épiceries de campagne sont très chères. Prévoyez provisions pour 3 jours." },
+      { "icon": "🌟", "label": "Bon plan nuit", "text": "L'Ardèche est une Zone Noire (absence de pollution lumineuse). Emportez un télescope ou rejoignez l'Observatoire du Pic de Barre pour une soirée astronomie inoubliable." }
+    ],
     "poolScore": 4,
     "beachScore": 1,
     "cleanScore": 5,
@@ -339,7 +381,7 @@
       { "author": "Thomas R.", "rating": 9.2, "date": "Juillet 2026", "comment": "Un havre de paix au milieu de la nature. Baignade en rivière fantastique !" }
     ],
     "images": [
-      "https://images.unsplash.com/photo-153756526675b-34dd68c18731?w=800&q=80",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
       "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80"
     ]
@@ -363,6 +405,13 @@
       "service": 9.8,
       "value": 9.3
     },
+    "tips": [
+      { "icon": "✈️", "label": "Transport", "text": "Vol direct vers Faro (aéroport d'Algarve) depuis Nantes ou Paris (~2h15). Navette aéroport incluse à l'hôtel. Sur place, location de voiture recommandée pour explorer la région (~30€/jour)." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "La Cataplana de peixe (ragoût de fruits de mer), le Bacalhau à Brás (morue), les Pastéis de Belém et le Vinho Verde frais. Dînez au port de Portimão pour les prix les plus justes." },
+      { "icon": "🏖️", "label": "Plages secrètes", "text": "Praia da Marinha et Praia do Camilo sont parmi les plus belles d'Europe. Arrivez avant 9h ou après 17h pour les trouver quasi-désertes même en plein août." },
+      { "icon": "💶", "label": "Budget local", "text": "Le Portugal reste l'une des destinations les moins chères d'Europe de l'Ouest : repas complet au restaurant de village autour de 12–15€/pers, vin local inclus." },
+      { "icon": "🐬", "label": "Bon plan nature", "text": "Réservez une sortie dauphin en bateau depuis Lagos ou Portimão (~35€/pers, 2h). Les observations de dauphins communs sont quasi garanties en été !" }
+    ],
     "poolScore": 5,
     "beachScore": 5,
     "cleanScore": 5,
@@ -422,6 +471,13 @@
       "service": 8.4,
       "value": 9.1
     },
+    "tips": [
+      { "icon": "🚆", "label": "Transport", "text": "Train Rennes→Nantes en 1h10 (~20€). Tramway et busway très efficaces en centre-ville. La Bicloo (vélib nantais) est parfaite pour se déplacer — abonnement journée à 1€." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "Le Muscadet (vin local), les Rillauds (travers de porc) au marché de Talensac, la Gâteau nantais au rhum, et les créations du chef au Restaurant LuLu Rouget (étoilé accessible)." },
+      { "icon": "🎨", "label": "Bon plan culture", "text": "Les Machines de l'Île (éléphant géant, carrousel des Mondes Marins) — réservez 2 semaines à l'avance en été ! Prévoir 2h et 15–25€/pers selon les attractions choisies." },
+      { "icon": "💶", "label": "Budget local", "text": "Le marché de la Petite Hollande (samedi matin, gratuit) est idéal pour petit-déjeuner avec des produits locaux. Budget courses : 8–10€ pour un copieux repas du midi fait maison." },
+      { "icon": "🚲", "label": "Astuce mobilité", "text": "Louez un vélo pour rejoindre les bords de Loire — 30 km de piste cyclable sans voiture jusqu'à l'estuaire. Vue unique sur les chantiers navals et l'art de rue industriel." }
+    ],
     "poolScore": 1,
     "beachScore": 1,
     "cleanScore": 4,
@@ -477,6 +533,13 @@
       "service": 8.5,
       "value": 8.2
     },
+    "tips": [
+      { "icon": "🚗", "label": "Transport", "text": "1h30-2h depuis Rennes via Nantes et la D948. Les Sables-d'Olonne et Saint-Jean-de-Monts sont les bases idéales. Voiture indispensable pour explorer les îles (bac pour l'Île de Noirmoutier)." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "Les Moules de bouchot vendéennes, la Mogette de Vendée (haricot blanc IGP), le Préfou (pain à l'ail au beurre) et le Vieux-Charles (fromage local)." },
+      { "icon": "🎢", "label": "Bon plan famille", "text": "Le Puy du Fou est à 30 min ! L'un des meilleurs parcs à thème du monde. Réservez vos entrées 1 mois à l'avance (40–55€/adulte). Le Grand Parc Night Show est magique." },
+      { "icon": "💶", "label": "Budget local", "text": "Faites vos moules-frites au bord de mer : comptez 18–22€ en restaurant. Achetez directement chez le mytiliculteur local à Beauvoir-sur-Mer pour 3€/kg et cuisinez vous-même." },
+      { "icon": "🌊", "label": "Astuce plage", "text": "Les Plages de la Normandelière et de la Barre de Monts sont peu connues des touristes. Parking gratuit, eau propre, idéal pour les familles avec jeunes enfants." }
+    ],
     "poolScore": 3,
     "beachScore": 5,
     "cleanScore": 4,
@@ -534,6 +597,13 @@
       "service": 8.6,
       "value": 8.9
     },
+    "tips": [
+      { "icon": "🚗", "label": "Transport", "text": "~3h30 de Rennes via Nantes et l'A10. Parking sur site. La voiture est indispensable : La Dune du Pilat et le Bassin d'Arcachon sont à 20–40 min et mal desservis en transports." },
+      { "icon": "🍽️", "label": "Plats à tester", "text": "Les Huîtres d'Arcachon (à manger les pieds dans l'eau à Gujan-Mestras), le Canelé bordelais, l'Entrecôte à la bordelaise et les rillettes de saumon fraîchement fumé." },
+      { "icon": "🏔️", "label": "Bon plan nature", "text": "La Dune du Pilat (plus grande dune d'Europe) est à 20 min : montez-la au lever du soleil (gratuit avant 9h et sans foule). Vue à 360° sur l'Atlantique et la forêt de pins." },
+      { "icon": "💶", "label": "Budget local", "text": "Marché de Gujan-Mestras le matin pour huîtres à prix producteur (9–12€ la douzaine). Les bars du Cap-Ferret proposent des dégustations avec vue exceptionnelle." },
+      { "icon": "🏄", "label": "Astuce sport", "text": "Cours de surf à Lacanau Ocean (20 min) dès 35€/session, matériel inclus. Les vagues du spot de la Grande Plage sont idéales pour débutants en fin de matinée." }
+    ],
     "poolScore": 4,
     "beachScore": 5,
     "cleanScore": 4,
@@ -561,7 +631,7 @@
       { "id": "mh", "name": "Mobil-Home Grand Confort", "priceMultiplier": 1, "beds": "1 Double + 2 Simples", "size": "32 m²" }
     ],
     "reviews": [
-      { "author": "Damien C.", "rating": 8.9, "date": "Juillet 2026", "comment": "Emplacement de rêve près de la duna du Pilat. Super vacances." }
+      { "author": "Damien C.", "rating": 8.9, "date": "Juillet 2026", "comment": "Emplacement de rêve près de la dune du Pilat. Super vacances." }
     ],
     "images": [
       "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800&q=80",
