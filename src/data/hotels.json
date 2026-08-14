@@ -11,6 +11,12 @@
     "lng": 2.93,
     "basePricePerNight": 160,
     "rating": 9.2,
+    "subScores": {
+      "cleanliness": 9.5,
+      "location": 9.2,
+      "service": 9.0,
+      "value": 8.9
+    },
     "poolScore": 5,
     "beachScore": 5,
     "cleanScore": 5,
@@ -39,6 +45,15 @@
       "Assez bruyant en soirée",
       "Chambres standards petites"
     ],
+    "roomTypes": [
+      { "id": "std", "name": "Chambre Standard Vue Jardin", "priceMultiplier": 1, "beds": "1 Lit Double", "size": "24 m²" },
+      { "id": "sea", "name": "Chambre Supérieure Vue Mer", "priceMultiplier": 1.25, "beds": "1 Lit King-size", "size": "32 m²" },
+      { "id": "fam", "name": "Suite Familiale Deluxe", "priceMultiplier": 1.5, "beds": "1 King + 2 Lits Simples", "size": "45 m²" }
+    ],
+    "reviews": [
+      { "author": "Sophie M.", "rating": 9.5, "date": "Juillet 2026", "comment": "Superbe séjour en famille. La piscine est magnifique et le buffet du petit-déjeuner très varié !" },
+      { "author": "Marc L.", "rating": 8.9, "date": "Juin 2026", "comment": "Personnel très accueillant. Emplacement idéal proche des plages et des commerces." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
@@ -57,6 +72,12 @@
     "lng": -1.2,
     "basePricePerNight": 110,
     "rating": 8.5,
+    "subScores": {
+      "cleanliness": 8.2,
+      "location": 8.8,
+      "service": 8.6,
+      "value": 9.1
+    },
     "poolScore": 5,
     "beachScore": 3,
     "cleanScore": 4,
@@ -81,6 +102,13 @@
       "Prendre la voiture pour la plage",
       "Pas de serviettes ni ménage"
     ],
+    "roomTypes": [
+      { "id": "mh2", "name": "Mobil-Home 2 Chambres (4 pers)", "priceMultiplier": 1, "beds": "1 Double + 2 Simples", "size": "30 m²" },
+      { "id": "mh3", "name": "Cottage Premium 3 Chambres (6 pers)", "priceMultiplier": 1.35, "beds": "1 King + 4 Simples", "size": "40 m²" }
+    ],
+    "reviews": [
+      { "author": "Antoine B.", "rating": 9.0, "date": "Août 2026", "comment": "Les enfants ont adoré le parc aquatique. Super ambiance en soirée." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1533873984035-25970ab07461?w=800&q=80",
       "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
@@ -99,6 +127,12 @@
     "lng": 1.14,
     "basePricePerNight": 200,
     "rating": 9.5,
+    "subScores": {
+      "cleanliness": 9.8,
+      "location": 9.7,
+      "service": 9.2,
+      "value": 9.0
+    },
     "poolScore": 3,
     "beachScore": 5,
     "cleanScore": 5,
@@ -124,6 +158,13 @@
       "Budget plus élevé",
       "Pas d'animation pour enfants"
     ],
+    "roomTypes": [
+      { "id": "apt2", "name": "Appartement 2 Pièces Vue Mer", "priceMultiplier": 1, "beds": "1 King + 1 Canapé-lit", "size": "55 m²" },
+      { "id": "pent", "name": "Penthouse Suite Terrasse Panoramique", "priceMultiplier": 1.4, "beds": "2 Kings", "size": "85 m²" }
+    ],
+    "reviews": [
+      { "author": "Claire D.", "rating": 9.8, "date": "Mai 2026", "comment": "La terrasse avec vue sur la Méditerranée est à couper le souffle. Appartement très bien équipé." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80",
       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
@@ -141,7 +182,13 @@
     "lat": 48.2,
     "lng": -3,
     "basePricePerNight": 140,
-    "rating": 8,
+    "rating": 8.0,
+    "subScores": {
+      "cleanliness": 7.8,
+      "location": 8.5,
+      "service": 8.1,
+      "value": 8.0
+    },
     "poolScore": 4,
     "beachScore": 4,
     "cleanScore": 3,
@@ -167,6 +214,13 @@
       "Bâtiments vieillissants",
       "Propreté parfois critiquée"
     ],
+    "roomTypes": [
+      { "id": "bng", "name": "Bungalow Confort 4 Personnes", "priceMultiplier": 1, "beds": "1 Double + 2 Simples", "size": "35 m²" },
+      { "id": "bng_vip", "name": "Bungalow VIP Bord de Plage", "priceMultiplier": 1.3, "beds": "1 King + 2 Simples", "size": "45 m²" }
+    ],
+    "reviews": [
+      { "author": "Julien P.", "rating": 8.0, "date": "Juillet 2026", "comment": "Idéal avec des jeunes enfants. Les moniteurs du club enfants sont très sympas." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
@@ -185,6 +239,12 @@
     "lng": 2.35,
     "basePricePerNight": 130,
     "rating": 7.8,
+    "subScores": {
+      "cleanliness": 8.0,
+      "location": 9.2,
+      "service": 7.9,
+      "value": 7.5
+    },
     "poolScore": 1,
     "beachScore": 1,
     "cleanScore": 4,
@@ -210,6 +270,13 @@
       "Pas de piscine ni plage",
       "Parking payant à proximité"
     ],
+    "roomTypes": [
+      { "id": "std", "name": "Chambre Double Classique", "priceMultiplier": 1, "beds": "1 Lit Double", "size": "18 m²" },
+      { "id": "sup", "name": "Chambre Supérieure sur Cour", "priceMultiplier": 1.2, "beds": "1 Queen Size", "size": "22 m²" }
+    ],
+    "reviews": [
+      { "author": "Élodie F.", "rating": 7.8, "date": "Février 2026", "comment": "Emplacement au top pour visiter Paris à pied. Literie confortable." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80",
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
@@ -227,7 +294,13 @@
     "lat": 44.6,
     "lng": 4.4,
     "basePricePerNight": 80,
-    "rating": 9,
+    "rating": 9.0,
+    "subScores": {
+      "cleanliness": 9.2,
+      "location": 9.5,
+      "service": 8.8,
+      "value": 9.4
+    },
     "poolScore": 4,
     "beachScore": 1,
     "cleanScore": 5,
@@ -252,6 +325,13 @@
       "Pas de plage à proximité",
       "Peu d'animations en soirée"
     ],
+    "roomTypes": [
+      { "id": "tente", "name": "Lodge Safari Bois & Toile", "priceMultiplier": 1, "beds": "1 Double + 2 Simples", "size": "28 m²" },
+      { "id": "chalet", "name": "Chalet Eco-Luxe Rivière", "priceMultiplier": 1.3, "beds": "1 King + 2 Simples", "size": "35 m²" }
+    ],
+    "reviews": [
+      { "author": "Thomas R.", "rating": 9.2, "date": "Juillet 2026", "comment": "Un havre de paix au milieu de la nature. Baignade en rivière fantastique !" }
+    ],
     "images": [
       "https://images.unsplash.com/photo-153756526675b-34dd68c18731?w=800&q=80",
       "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80",
@@ -270,6 +350,12 @@
     "lng": -8,
     "basePricePerNight": 250,
     "rating": 9.8,
+    "subScores": {
+      "cleanliness": 9.9,
+      "location": 9.9,
+      "service": 9.8,
+      "value": 9.3
+    },
     "poolScore": 5,
     "beachScore": 5,
     "cleanScore": 5,
@@ -297,6 +383,13 @@
     "cons": [
       "Très cher"
     ],
+    "roomTypes": [
+      { "id": "deluxe", "name": "Chambre Deluxe Vue Océan", "priceMultiplier": 1, "beds": "1 King-size", "size": "45 m²" },
+      { "id": "suite", "name": "Suite Prestige avec Jacuzzi Privatif", "priceMultiplier": 1.6, "beds": "1 Super King", "size": "70 m²" }
+    ],
+    "reviews": [
+      { "author": "Marie-Christine V.", "rating": 9.9, "date": "Août 2026", "comment": "Un service 5 étoiles irréprochable du début à la fin. Le spa et la piscine sont d'un niveau exceptionnel." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1542314831-c6a4d142104d?w=800&q=80",
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
@@ -315,6 +408,12 @@
     "lng": -1.5,
     "basePricePerNight": 90,
     "rating": 8.6,
+    "subScores": {
+      "cleanliness": 8.8,
+      "location": 9.0,
+      "service": 8.4,
+      "value": 9.1
+    },
     "poolScore": 1,
     "beachScore": 1,
     "cleanScore": 4,
@@ -339,6 +438,12 @@
       "Bruyant la nuit",
       "Pas de parking"
     ],
+    "roomTypes": [
+      { "id": "t2", "name": "Studio Design Centre-Ville", "priceMultiplier": 1, "beds": "1 Lit Double", "size": "25 m²" }
+    ],
+    "reviews": [
+      { "author": "Nicolas G.", "rating": 8.6, "date": "Mars 2026", "comment": "Très propre, bien situé près des transports et des restaurants." }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1502672260266-1c1cd2cb9df4?w=800&q=80",
       "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80",
@@ -357,6 +462,12 @@
     "lng": -1.9,
     "basePricePerNight": 120,
     "rating": 8.3,
+    "subScores": {
+      "cleanliness": 8.4,
+      "location": 9.1,
+      "service": 8.5,
+      "value": 8.2
+    },
     "poolScore": 3,
     "beachScore": 5,
     "cleanScore": 4,
@@ -383,6 +494,12 @@
       "Déco un peu vieillotte",
       "Petite piscine"
     ],
+    "roomTypes": [
+      { "id": "std", "name": "Chambre Familiale 4 Lits", "priceMultiplier": 1, "beds": "1 Double + 2 Simples", "size": "30 m²" }
+    ],
+    "reviews": [
+      { "author": "Laurence K.", "rating": 8.3, "date": "Août 2026", "comment": "La plage au pied de l'hôtel est un vrai plus avec les enfants !" }
+    ],
     "images": [
       "https://images.unsplash.com/photo-1561501878-aabd62634533?w=800&q=80",
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
@@ -401,6 +518,12 @@
     "lng": -1.1,
     "basePricePerNight": 100,
     "rating": 8.8,
+    "subScores": {
+      "cleanliness": 8.7,
+      "location": 9.4,
+      "service": 8.6,
+      "value": 8.9
+    },
     "poolScore": 4,
     "beachScore": 5,
     "cleanScore": 4,
@@ -423,6 +546,12 @@
     ],
     "cons": [
       "Réseau mobile faible"
+    ],
+    "roomTypes": [
+      { "id": "mh", "name": "Mobil-Home Grand Confort", "priceMultiplier": 1, "beds": "1 Double + 2 Simples", "size": "32 m²" }
+    ],
+    "reviews": [
+      { "author": "Damien C.", "rating": 8.9, "date": "Juillet 2026", "comment": "Emplacement de rêve près de la duna du Pilat. Super vacances." }
     ],
     "images": [
       "https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?w=800&q=80",

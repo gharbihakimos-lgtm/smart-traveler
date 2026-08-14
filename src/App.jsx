@@ -13,6 +13,7 @@ import 'leaflet/dist/leaflet.css';
 import mockHotels from './data/hotels.json';
 import { t } from './i18n';
 import HotelCard from './components/HotelCard';
+import FilterBar from './components/FilterBar';
 import { Intro } from './components/steps/Intro';
 import { StepChat } from './components/steps/StepChat';
 import LegalModal from './components/LegalModal';
@@ -38,6 +39,12 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [legalType, setLegalType] = useState(null);
+  const [filters, setFilters] = useState({
+    searchQuery: '',
+    maxPrice: 300,
+    minRating: 0,
+    amenities: []
+  });
 
   if (window.location.search.includes('privacy=true') || window.location.pathname === '/privacy') {
     return (
@@ -513,13 +520,30 @@ function App() {
       );
     }
 
-    let sortedResults = [...results];
+    let filteredResults = results.filter(item => {
+      if (filters.searchQuery) {
+        const q = filters.searchQuery.toLowerCase();
+        const matchName = item.name.toLowerCase().includes(q);
+        const matchLoc = item.location.toLowerCase().includes(q);
+        if (!matchName && !matchLoc) return false;
+      }
+      if (item.basePricePerNight > filters.maxPrice) return false;
+      if (filters.minRating > 0 && item.rating < filters.minRating) return false;
+      if (filters.amenities.length > 0) {
+        const itemConstraints = item.constraints || [];
+        const hasAll = filters.amenities.every(a => itemConstraints.includes(a));
+        if (!hasAll) return false;
+      }
+      return true;
+    });
+
+    let sortedResults = [...filteredResults];
     if (sortBy === 'price') {
       sortedResults.sort((a, b) => a.totalPrice - b.totalPrice);
     } else if (sortBy === 'distance') {
       sortedResults.sort((a, b) => a.distanceKm - b.distanceKm);
     }
-    const topResults = sortedResults.slice(0, 3);
+    const topResults = sortedResults;
 
     return (
       <div className="app-container" style={{maxWidth: '900px'}}>
@@ -532,6 +556,11 @@ function App() {
           <Compass size={20} style={{color: 'var(--primary)'}} />
           <strong style={{color: 'var(--primary)', fontSize: '1rem'}}>SmartStay Premium</strong>
           <span style={{color: 'var(--text-muted)', fontSize: '0.85rem'}}>— Retour à l'accueil</span>
+        </div>
+
+        {/* Real-time Filter Bar */}
+        <div style={{ marginTop: '1.5rem', width: '100%' }}>
+          <FilterBar filters={filters} setFilters={setFilters} />
         </div>
 
         {/* Interactive Map */}
