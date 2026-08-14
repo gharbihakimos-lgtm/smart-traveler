@@ -11,6 +11,7 @@
     "lng": 2.93,
     "basePricePerNight": 160,
     "rating": 9.2,
+    "availableChannels": ["booking", "agoda", "official"],
     "subScores": {
       "cleanliness": 9.5,
       "location": 9.2,
@@ -72,6 +73,7 @@
     "lng": -1.2,
     "basePricePerNight": 110,
     "rating": 8.5,
+    "availableChannels": ["official", "booking"],
     "subScores": {
       "cleanliness": 8.2,
       "location": 8.8,
@@ -127,6 +129,7 @@
     "lng": 1.14,
     "basePricePerNight": 200,
     "rating": 9.5,
+    "availableChannels": ["airbnb", "booking", "official"],
     "subScores": {
       "cleanliness": 9.8,
       "location": 9.7,
@@ -183,6 +186,7 @@
     "lng": -3,
     "basePricePerNight": 140,
     "rating": 8.0,
+    "availableChannels": ["official", "booking"],
     "subScores": {
       "cleanliness": 7.8,
       "location": 8.5,
@@ -239,6 +243,7 @@
     "lng": 2.35,
     "basePricePerNight": 130,
     "rating": 7.8,
+    "availableChannels": ["booking", "agoda", "official"],
     "subScores": {
       "cleanliness": 8.0,
       "location": 9.2,
@@ -295,6 +300,7 @@
     "lng": 4.4,
     "basePricePerNight": 80,
     "rating": 9.0,
+    "availableChannels": ["official", "booking"],
     "subScores": {
       "cleanliness": 9.2,
       "location": 9.5,
@@ -350,6 +356,7 @@
     "lng": -8,
     "basePricePerNight": 250,
     "rating": 9.8,
+    "availableChannels": ["booking", "agoda", "official"],
     "subScores": {
       "cleanliness": 9.9,
       "location": 9.9,
@@ -408,6 +415,7 @@
     "lng": -1.5,
     "basePricePerNight": 90,
     "rating": 8.6,
+    "availableChannels": ["airbnb", "booking", "official"],
     "subScores": {
       "cleanliness": 8.8,
       "location": 9.0,
@@ -462,6 +470,7 @@
     "lng": -1.9,
     "basePricePerNight": 120,
     "rating": 8.3,
+    "availableChannels": ["booking", "official"],
     "subScores": {
       "cleanliness": 8.4,
       "location": 9.1,
@@ -518,6 +527,7 @@
     "lng": -1.1,
     "basePricePerNight": 100,
     "rating": 8.8,
+    "availableChannels": ["official", "booking"],
     "subScores": {
       "cleanliness": 8.7,
       "location": 9.4,

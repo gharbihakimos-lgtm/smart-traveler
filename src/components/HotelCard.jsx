@@ -140,23 +140,41 @@ export default function HotelCard({ res, index, isFavorite, toggleFavorite, form
         </div>
         
         {/* External Booking Affiliates */}
-        <div style={{marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)'}}>
-          <p style={{textAlign: 'center', marginBottom: '1rem', fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem'}}>{t('availabilities', lang)}</p>
-          <div className="booking-links">
-            <a href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(res.name + ' ' + res.location)}`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#003B95', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(0, 59, 149, 0.3)'}}>
-              Booking.com
-            </a>
-            <a href={`https://www.agoda.com/search?text=${encodeURIComponent(res.name + ' ' + res.location)}`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF567D', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 86, 125, 0.3)'}}>
-              Agoda
-            </a>
-            <a href={`https://www.airbnb.fr/s/${encodeURIComponent(res.name + ' ' + res.location)}/homes`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF5A5F', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 90, 95, 0.3)'}}>
-              Airbnb
-            </a>
-            <a href={`https://www.google.com/search?q=${encodeURIComponent(res.name + ' ' + res.location + ' official site')}`} target="_blank" rel="noreferrer" className="btn-secondary fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem'}}>
-              {t('officialSite', lang)}
-            </a>
-          </div>
-        </div>
+        {(() => {
+          const channels = res.availableChannels || (
+            res.type === 'appart' ? ['airbnb', 'booking', 'official'] :
+            res.type === 'camping' ? ['official', 'booking'] :
+            ['booking', 'agoda', 'official']
+          );
+
+          return (
+            <div style={{marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)'}}>
+              <p style={{textAlign: 'center', marginBottom: '1rem', fontWeight: 600, color: 'var(--text-main)', fontSize: '0.9rem'}}>{t('availabilities', lang)}</p>
+              <div className="booking-links">
+                {channels.includes('booking') && (
+                  <a href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(res.name + ' ' + res.location)}`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#003B95', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(0, 59, 149, 0.3)'}}>
+                    Booking.com
+                  </a>
+                )}
+                {channels.includes('agoda') && (
+                  <a href={`https://www.agoda.com/search?text=${encodeURIComponent(res.name + ' ' + res.location)}`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF567D', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 86, 125, 0.3)'}}>
+                    Agoda
+                  </a>
+                )}
+                {channels.includes('airbnb') && (
+                  <a href={`https://www.airbnb.fr/s/${encodeURIComponent(res.name + ' ' + res.location)}/homes`} target="_blank" rel="noreferrer" className="btn fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem', background: '#FF5A5F', color: 'white', border: 'none', boxShadow: '0 4px 10px rgba(255, 90, 95, 0.3)'}}>
+                    Airbnb
+                  </a>
+                )}
+                {channels.includes('official') && (
+                  <a href={`https://www.google.com/search?q=${encodeURIComponent(res.name + ' ' + res.location + ' official site')}`} target="_blank" rel="noreferrer" className="btn-secondary fade-in" style={{display: 'inline-block', textDecoration: 'none', padding: '0.75rem 1.5rem', fontSize: '0.95rem'}}>
+                    {t('officialSite', lang)}
+                  </a>
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Render Modals */}
