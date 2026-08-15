@@ -23,6 +23,7 @@ import {
   COUNTRIES, REGIONS_BY_COUNTRY, WORLD_DESTINATIONS, 
   THEMES, CONTINENTS, getSeasonalSuggestions 
 } from './data/destinations';
+import { generateHotelsForDestination, getEffectiveDestinationName } from './utils/hotelEngine';
 
 // Fix for missing default markers in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -149,12 +150,12 @@ function App() {
     try {
       // Simulate network delay
       await new Promise(resolve => setTimeout(resolve, 800));
-      const rawHotels = mockHotels;
-      const scored = calculateScores(data, rawHotels);
+      const destinationHotels = generateHotelsForDestination(data, mockHotels);
+      const scored = calculateScores(data, destinationHotels);
       setResults(scored);
     } catch (err) {
       console.error(err);
-      toast.error("Erreur de connexion au serveur backend (Vérifiez qu'il est bien lancé).");
+      toast.error("Erreur lors de la recherche des hébergements.");
     } finally {
       setLoading(false);
     }
@@ -895,7 +896,12 @@ function App() {
 
         {/* Interactive Map */}
         <div className="card fade-in" style={{marginTop: '1.5rem', padding: '0', overflow: 'hidden', height: '400px', borderRadius: '12px'}}>
-          <MapContainer center={[46.0, 2.0]} zoom={4} style={{ height: '100%', width: '100%' }}>
+          <MapContainer 
+            key={`map-${topResults[0]?.country || 'dest'}-${topResults[0]?.lat || '0'}`} 
+            center={[topResults[0]?.lat || 46.0, topResults[0]?.lng || 2.0]} 
+            zoom={topResults[0]?.lat ? 10 : 4} 
+            style={{ height: '100%', width: '100%' }}
+          >
             <TileLayer
               url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -923,8 +929,10 @@ function App() {
         </div>
 
         <div style={{marginTop: '2rem', textAlign: 'center'}}>
-          <h1 style={{color: 'var(--primary)', marginBottom: '0.5rem'}}>Voici votre Top {topResults.length}</h1>
-          <p>Les meilleures correspondances selon vos critères.</p>
+          <h1 style={{color: 'var(--primary)', marginBottom: '0.5rem'}}>
+            Voici votre Top {topResults.length} à {getEffectiveDestinationName(data)}
+          </h1>
+          <p>Hébergements sélectionnés sur-mesure selon vos critères et votre budget.</p>
           
           <div style={{display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap'}}>
             <button className={`btn-secondary ${sortBy === 'score' ? 'active' : ''}`} onClick={() => setSortBy('score')} style={sortBy === 'score' ? {background: 'var(--primary)', color: 'white'} : {}}>🌟 Meilleur Score</button>
