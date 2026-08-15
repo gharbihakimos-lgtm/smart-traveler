@@ -27,7 +27,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 7;
 
 function App() {
   const [user, setUser] = useState(null);
@@ -641,7 +641,6 @@ function App() {
   // --- Main Render ---
 
   const steps = [
-    null,
     null,
     <Step1 key="s1" />,
     <Step2 key="s2" />,
