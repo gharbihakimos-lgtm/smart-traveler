@@ -14,10 +14,15 @@ import mockHotels from './data/hotels.json';
 import { t } from './i18n';
 import HotelCard from './components/HotelCard';
 import FilterBar from './components/FilterBar';
+import LiveSearchBlock from './components/LiveSearchBlock';
 import { Intro } from './components/steps/Intro';
 import { StepChat } from './components/steps/StepChat';
 import LegalModal from './components/LegalModal';
 import { toast } from 'sonner';
+import { 
+  COUNTRIES, REGIONS_BY_COUNTRY, WORLD_DESTINATIONS, 
+  THEMES, CONTINENTS, getSeasonalSuggestions 
+} from './data/destinations';
 
 // Fix for missing default markers in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -83,10 +88,14 @@ function App() {
 
   const [data, setData] = useState({
     departure: 'Rennes',
+    departureCustom: '',
     destinationType: 'world',
+    worldDestination: 'Bali, Indonésie',
+    worldDestinationCountry: 'Indonésie',
     distanceMax: 500,
     destinationCountry: 'France',
     destinationRegion: 'Bretagne',
+    destinationFreeText: '',
     dateStart: '2026-08-10',
     dateEnd: '2026-08-15',
     flexible: false,
@@ -157,115 +166,433 @@ function App() {
 
   // --- Components for Steps ---
   
-  const Step1 = () => (
-    <div className="fade-in">
-      <h2><MapPin size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Votre Itinéraire</h2>
-      <p style={{marginBottom: '2rem'}}>D'où partez-vous et où voulez-vous aller ?</p>
-      
-      <div className="form-group" style={{marginBottom: '2rem', paddingBottom: '2rem', borderBottom: '1px solid var(--border)'}}>
-        <label className="form-label">1. Lieu de départ (pour le calcul du trajet)</label>
-        <div className="radio-grid">
-          {['Rennes', 'Nantes', 'Paris', 'Autre', '📍 Ma position'].map(city => (
-            <div 
-              key={city}
-              className={`radio-card ${data.departure === city ? 'selected' : ''}`}
-              onClick={() => {
-                if (city === '📍 Ma position') {
+  const Step1 = () => {
+    const [worldTheme, setWorldTheme] = useState('all');
+    const [worldSearch, setWorldSearch] = useState('');
+    const [countryContinent, setCountryContinent] = useState('Tous');
+    const [countrySearch, setCountrySearch] = useState('');
+    const [regionCountry, setRegionCountry] = useState(data.destinationCountry || 'France');
+    const [regionSearch, setRegionSearch] = useState('');
+
+    const seasonal = getSeasonalSuggestions();
+
+    // Filter world destinations
+    const filteredWorld = WORLD_DESTINATIONS.filter(item => {
+      const matchTheme = worldTheme === 'all' || item.theme === worldTheme;
+      const matchSearch = !worldSearch || 
+        item.name.toLowerCase().includes(worldSearch.toLowerCase()) || 
+        item.country.toLowerCase().includes(worldSearch.toLowerCase()) || 
+        item.desc.toLowerCase().includes(worldSearch.toLowerCase());
+      return matchTheme && matchSearch;
+    });
+
+    // Filter countries
+    const filteredCountries = COUNTRIES.filter(c => {
+      const matchCont = countryContinent === 'Tous' || c.continent === countryContinent;
+      const matchSearch = !countrySearch || 
+        c.name.toLowerCase().includes(countrySearch.toLowerCase()) || 
+        c.code.toLowerCase().includes(countrySearch.toLowerCase());
+      return matchCont && matchSearch;
+    });
+
+    // Filter regions
+    const availableRegions = REGIONS_BY_COUNTRY[regionCountry] || [];
+    const filteredRegions = availableRegions.filter(r => {
+      return !regionSearch || 
+        r.name.toLowerCase().includes(regionSearch.toLowerCase()) || 
+        r.city.toLowerCase().includes(regionSearch.toLowerCase());
+    });
+
+    return (
+      <div className="fade-in">
+        <h2><MapPin size={24} style={{verticalAlign:'middle', marginRight:'8px', color:'var(--primary)'}}/> Votre Itinéraire</h2>
+        <p style={{marginBottom: '1.5rem'}}>D'où partez-vous et où voulez-vous aller ?</p>
+        
+        {/* 1. Departure Selection */}
+        <div className="form-group" style={{marginBottom: '2rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--border)'}}>
+          <label className="form-label">1. Lieu de départ (pour calcul du trajet & estimation transport)</label>
+          <div className="radio-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))' }}>
+            {['Rennes', 'Nantes', 'Paris', 'Lyon', '📍 Ma position', 'Autre'].map(city => (
+              <div 
+                key={city}
+                className={`radio-card ${data.departure === city ? 'selected' : ''}`}
+                onClick={() => {
+                  if (city === '📍 Ma position') {
+                    if (navigator.geolocation) {
+                      navigator.geolocation.getCurrentPosition((pos) => {
+                        updateData('lat', pos.coords.latitude);
+                        updateData('lng', pos.coords.longitude);
+                        updateData('departure', city);
+                        toast.success("Position détectée avec succès !");
+                      }, () => toast.error("Impossible d'obtenir votre position."));
+                    } else toast.error("Géolocalisation non supportée.");
+                  } else {
+                    updateData('departure', city);
+                  }
+                }}
+              >
+                {city}
+              </div>
+            ))}
+          </div>
+
+          {data.departure === 'Autre' && (
+            <div className="fade-in" style={{ marginTop: '0.75rem' }}>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Entrez votre ville de départ (ex: Marseille, Bordeaux, Bruxelles...)"
+                value={data.departureCustom || ''}
+                onChange={(e) => {
+                  updateData('departureCustom', e.target.value);
+                  updateData('departureFreeText', e.target.value);
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* 2. Destination Selection */}
+        <div className="form-group">
+          <label className="form-label">2. Destination souhaitée</label>
+          <div className="radio-grid" style={{gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', marginBottom: '1.5rem'}}>
+            <div className={`radio-card ${data.destinationType === 'world' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'world')}>
+              🌍 Le Monde Entier
+            </div>
+            <div className={`radio-card ${data.destinationType === 'around_me' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'around_me')}>
+              📍 Autour de moi
+            </div>
+            <div className={`radio-card ${data.destinationType === 'country' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'country')}>
+              🗺️ Un Pays (195)
+            </div>
+            <div className={`radio-card ${data.destinationType === 'region' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'region')}>
+              🏞️ Une Région
+            </div>
+          </div>
+
+          {/* 🌍 1. LE MONDE ENTIER */}
+          {data.destinationType === 'world' && (
+            <div className="fade-in" style={{ background: 'var(--border)', padding: '1.25rem', borderRadius: '18px' }}>
+              {/* Seasonal Suggestion Banner */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.12) 0%, rgba(14, 165, 233, 0.12) 100%)',
+                border: '1px solid var(--primary)',
+                borderRadius: '14px',
+                padding: '0.85rem 1rem',
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.5rem'
+              }}>
+                <div style={{ fontSize: '0.88rem' }}>
+                  <strong style={{ color: 'var(--primary)' }}>☀️ Recommandation pour la saison ({seasonal.season}) :</strong>{' '}
+                  <span>{seasonal.suggestions.join(' • ')}</span>
+                </div>
+              </div>
+
+              {/* Theme Filters */}
+              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                {THEMES.map(th => (
+                  <button
+                    key={th.id}
+                    type="button"
+                    onClick={() => setWorldTheme(th.id)}
+                    style={{
+                      padding: '0.35rem 0.8rem',
+                      borderRadius: '20px',
+                      fontSize: '0.85rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      border: '1px solid',
+                      borderColor: worldTheme === th.id ? 'var(--primary)' : 'transparent',
+                      background: worldTheme === th.id ? 'var(--primary)' : 'var(--card-bg)',
+                      color: worldTheme === th.id ? 'white' : 'var(--text-main)',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {th.emoji} {th.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Bar for World Destinations */}
+              <div style={{ marginBottom: '1rem' }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Rechercher une destination ou pays (ex: Bali, Maldives, Islande, Japon...)"
+                  value={worldSearch}
+                  onChange={(e) => setWorldSearch(e.target.value)}
+                  style={{ fontSize: '0.9rem' }}
+                />
+              </div>
+
+              {/* Destinations Grid */}
+              <div style={{
+                maxHeight: '320px',
+                overflowY: 'auto',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                gap: '0.75rem',
+                paddingRight: '4px'
+              }}>
+                {filteredWorld.map(item => {
+                  const isSelected = data.worldDestination === item.name;
+                  return (
+                    <div
+                      key={item.name}
+                      onClick={() => {
+                        updateData('worldDestination', item.name);
+                        updateData('worldDestinationCountry', item.country);
+                        updateData('destinationCountry', item.country);
+                      }}
+                      style={{
+                        background: isSelected ? 'rgba(20, 184, 166, 0.12)' : 'var(--card-bg)',
+                        border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+                        borderRadius: '14px',
+                        padding: '0.85rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                        <strong style={{ fontSize: '0.95rem', color: isSelected ? 'var(--primary)' : 'var(--text-main)' }}>
+                          {item.flag} {item.name}
+                        </strong>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)' }}>
+                          {item.priceLevel}
+                        </span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.3 }}>
+                        {item.desc}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {data.worldDestination && (
+                <div style={{ marginTop: '0.9rem', fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, textAlign: 'center' }}>
+                  ✓ Destination sélectionnée : <strong>{data.worldDestination}</strong>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 📍 2. AUTOUR DE MOI */}
+          {data.destinationType === 'around_me' && (
+            <div className="fade-in" style={{ background: 'var(--border)', padding: '1.25rem', borderRadius: '18px' }}>
+              <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
+                <button className="btn fade-in" onClick={() => {
                   if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition((pos) => {
+                      toast.success(`Localisation OK ! Lat: ${pos.coords.latitude.toFixed(2)}, Lng: ${pos.coords.longitude.toFixed(2)}`);
                       updateData('lat', pos.coords.latitude);
                       updateData('lng', pos.coords.longitude);
-                      updateData('departure', city);
+                      updateData('departure', 'Ma position');
                     }, () => toast.error("Impossible d'obtenir votre position."));
-                  } else toast.error("Géolocalisation non supportée.");
-                } else {
-                  updateData('departure', city);
-                }
-              }}
-            >
-              {city}
+                  } else {
+                    toast.error("Géolocalisation non supportée.");
+                  }
+                }}>
+                  <MapPin size={18} /> Me localiser automatiquement
+                </button>
+              </div>
+              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Rayon de recherche max</span>
+                <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{data.distanceMax} km</span>
+              </label>
+              <input 
+                type="range" 
+                min="50" max="1500" step="50"
+                value={data.distanceMax} 
+                onChange={e => updateData('distanceMax', parseInt(e.target.value))}
+                style={{ width: '100%', accentColor: 'var(--primary)' }}
+              />
             </div>
-          ))}
-        </div>
-      </div>
+          )}
 
-      <div className="form-group">
-        <label className="form-label">2. Destination souhaitée</label>
-        <div className="radio-grid" style={{gridTemplateColumns: 'repeat(2, 1fr)'}}>
-          <div className={`radio-card ${data.destinationType === 'world' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'world')}>
-            🌍 Le Monde Entier
-          </div>
-          <div className={`radio-card ${data.destinationType === 'around_me' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'around_me')}>
-            📍 Autour de moi
-          </div>
-          <div className={`radio-card ${data.destinationType === 'country' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'country')}>
-            🗺️ Un Pays
-          </div>
-          <div className={`radio-card ${data.destinationType === 'region' ? 'selected' : ''}`} onClick={() => updateData('destinationType', 'region')}>
-            🏞️ Une Région
-          </div>
-        </div>
+          {/* 🗺️ 3. UN PAYS (195 Pays du Monde) */}
+          {data.destinationType === 'country' && (
+            <div className="fade-in" style={{ background: 'var(--border)', padding: '1.25rem', borderRadius: '18px' }}>
+              {/* Continent Pills */}
+              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
+                {['Tous', ...CONTINENTS].map(cont => (
+                  <button
+                    key={cont}
+                    type="button"
+                    onClick={() => setCountryContinent(cont)}
+                    style={{
+                      padding: '0.3rem 0.75rem',
+                      borderRadius: '16px',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      border: '1px solid',
+                      borderColor: countryContinent === cont ? 'var(--primary)' : 'transparent',
+                      background: countryContinent === cont ? 'var(--primary)' : 'var(--card-bg)',
+                      color: countryContinent === cont ? 'white' : 'var(--text-main)'
+                    }}
+                  >
+                    {cont}
+                  </button>
+                ))}
+              </div>
 
-        {data.destinationType === 'around_me' && (
-          <div className="fade-in" style={{marginTop: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px'}}>
-            <div style={{textAlign: 'center', marginBottom: '1rem'}}>
-              <button className="btn fade-in" onClick={() => {
-                if (navigator.geolocation) {
-                  navigator.geolocation.getCurrentPosition((pos) => {
-                    toast.success(`Localisation OK ! Lat: ${pos.coords.latitude.toFixed(2)}, Lng: ${pos.coords.longitude.toFixed(2)}`);
-                    updateData('lat', pos.coords.latitude);
-                    updateData('lng', pos.coords.longitude);
-                    updateData('departure', 'Ma position');
-                  }, () => toast.error("Impossible d'obtenir votre position."));
-                } else {
-                  toast.error("Géolocalisation non supportée.");
-                }
+              {/* Search input for countries */}
+              <div style={{ marginBottom: '0.85rem' }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Filtrer parmi les 195 pays (ex: Japon, Italie, Norvège, Brésil...)"
+                  value={countrySearch}
+                  onChange={(e) => setCountrySearch(e.target.value)}
+                  style={{ fontSize: '0.9rem' }}
+                />
+              </div>
+
+              {/* Countries scroll list */}
+              <div style={{
+                maxHeight: '260px',
+                overflowY: 'auto',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gap: '0.5rem',
+                paddingRight: '4px'
               }}>
-                <MapPin size={18} /> Me localiser
-              </button>
-            </div>
-            <label className="form-label" style={{display:'flex', justifyContent:'space-between'}}>
-              <span>Rayon de recherche max</span>
-              <span style={{color: 'var(--primary)', fontWeight: 'bold'}}>{data.distanceMax} km</span>
-            </label>
-            <input 
-              type="range" 
-              min="50" max="1500" step="50"
-              value={data.distanceMax} 
-              onChange={e => updateData('distanceMax', parseInt(e.target.value))}
-              style={{width: '100%', accentColor: 'var(--primary)'}}
-            />
-          </div>
-        )}
-        
-        {data.destinationType === 'country' && (
-          <div className="fade-in" style={{marginTop: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px'}}>
-            <label className="form-label">Choisissez un pays</label>
-            <select className="form-input" value={data.destinationCountry} onChange={e => updateData('destinationCountry', e.target.value)}>
-              <option value="France">France</option>
-              <option value="Espagne">Espagne</option>
-              <option value="Portugal">Portugal</option>
-            </select>
-          </div>
-        )}
+                {filteredCountries.map(c => {
+                  const isSelected = data.destinationCountry === c.name;
+                  return (
+                    <div
+                      key={c.code}
+                      onClick={() => updateData('destinationCountry', c.name)}
+                      style={{
+                        background: isSelected ? 'rgba(20, 184, 166, 0.15)' : 'var(--card-bg)',
+                        border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+                        borderRadius: '12px',
+                        padding: '0.65rem 0.85rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.9rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--primary)' : 'var(--text-main)' }}>
+                        {c.flag} {c.name}
+                      </span>
+                      {c.popular && <span style={{ fontSize: '0.65rem', background: 'rgba(20, 184, 166, 0.1)', color: 'var(--primary)', padding: '0.15rem 0.35rem', borderRadius: '6px', fontWeight: 700 }}>Top</span>}
+                    </div>
+                  );
+                })}
+              </div>
 
-        {data.destinationType === 'region' && (
-          <div className="fade-in" style={{marginTop: '1.5rem', background: '#f8fafc', padding: '1rem', borderRadius: '12px'}}>
-            <label className="form-label">Choisissez une région</label>
-            <select className="form-input" value={data.destinationRegion} onChange={e => updateData('destinationRegion', e.target.value)}>
-              <option value="Bretagne">Bretagne</option>
-              <option value="Nouvelle-Aquitaine">Nouvelle-Aquitaine</option>
-              <option value="Île-de-France">Île-de-France</option>
-              <option value="Auvergne-Rhône-Alpes">Auvergne-Rhône-Alpes</option>
-              <option value="Pays de la Loire">Pays de la Loire</option>
-              <option value="Catalogne">Catalogne (Espagne)</option>
-              <option value="Algarve">Algarve (Portugal)</option>
-            </select>
-          </div>
-        )}
+              {data.destinationCountry && (
+                <div style={{ marginTop: '0.85rem', fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, textAlign: 'center' }}>
+                  ✓ Pays sélectionné : <strong>{data.destinationCountry}</strong>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 🏞️ 4. UNE RÉGION */}
+          {data.destinationType === 'region' && (
+            <div className="fade-in" style={{ background: 'var(--border)', padding: '1.25rem', borderRadius: '18px' }}>
+              {/* Select country for regions */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--text-muted)' }}>
+                    1. Pays de la région
+                  </label>
+                  <select
+                    className="form-input"
+                    value={regionCountry}
+                    onChange={(e) => {
+                      setRegionCountry(e.target.value);
+                      updateData('destinationCountry', e.target.value);
+                    }}
+                    style={{ fontSize: '0.9rem' }}
+                  >
+                    {Object.keys(REGIONS_BY_COUNTRY).map(cName => (
+                      <option key={cName} value={cName}>{cName}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.3rem', color: 'var(--text-muted)' }}>
+                    2. Filtrer les régions
+                  </label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Ex: Bretagne, Toscane, Algarve..."
+                    value={regionSearch}
+                    onChange={(e) => setRegionSearch(e.target.value)}
+                    style={{ fontSize: '0.9rem' }}
+                  />
+                </div>
+              </div>
+
+              {/* Regions Grid */}
+              <div style={{
+                maxHeight: '260px',
+                overflowY: 'auto',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '0.5rem',
+                paddingRight: '4px'
+              }}>
+                {filteredRegions.map(r => {
+                  const isSelected = data.destinationRegion === r.name;
+                  return (
+                    <div
+                      key={r.name}
+                      onClick={() => {
+                        updateData('destinationRegion', r.name);
+                        updateData('destinationCountry', regionCountry);
+                      }}
+                      style={{
+                        background: isSelected ? 'rgba(20, 184, 166, 0.15)' : 'var(--card-bg)',
+                        border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+                        borderRadius: '12px',
+                        padding: '0.75rem 0.85rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <span style={{ fontSize: '1.2rem' }}>{r.flag}</span>
+                        <div>
+                          <strong style={{ display: 'block', fontSize: '0.88rem', color: isSelected ? 'var(--primary)' : 'var(--text-main)' }}>
+                            {r.name}
+                          </strong>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            Capitale / Phare : {r.city}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {data.destinationRegion && (
+                <div style={{ marginTop: '0.85rem', fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, textAlign: 'center' }}>
+                  ✓ Région sélectionnée : <strong>{data.destinationRegion} ({regionCountry})</strong>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const Step2 = () => (
     <div className="fade-in">
@@ -562,6 +889,9 @@ function App() {
         <div style={{ marginTop: '1.5rem', width: '100%' }}>
           <FilterBar filters={filters} setFilters={setFilters} />
         </div>
+
+        {/* Live Search Engines (Google Hotels, Booking, Airbnb, Kayak...) */}
+        <LiveSearchBlock userData={data} />
 
         {/* Interactive Map */}
         <div className="card fade-in" style={{marginTop: '1.5rem', padding: '0', overflow: 'hidden', height: '400px', borderRadius: '12px'}}>

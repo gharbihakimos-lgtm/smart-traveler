@@ -40,10 +40,18 @@ export const calculateScores = (userData, hotelsData) => {
     // 0. Destination Check
     if (userData.destinationType === 'around_me' && hotelDistance > userData.distanceMax) {
       warnings.push(`Trop loin (${hotelDistance} km, max ${userData.distanceMax} km)`);
-    } else if (userData.destinationType === 'country' && hotel.country !== userData.destinationCountry) {
-      warnings.push(`Situé en ${hotel.country} (Vous vouliez : ${userData.destinationCountry})`);
-    } else if (userData.destinationType === 'region' && hotel.region !== userData.destinationRegion) {
-      warnings.push(`Situé en ${hotel.region} (Vous vouliez : ${userData.destinationRegion})`);
+    } else if (userData.destinationType === 'country') {
+      if (userData.destinationCountry && hotel.country && !hotel.country.toLowerCase().includes(userData.destinationCountry.toLowerCase()) && !userData.destinationCountry.toLowerCase().includes(hotel.country.toLowerCase())) {
+        warnings.push(`Situé en ${hotel.country} (Vous vouliez : ${userData.destinationCountry})`);
+      }
+    } else if (userData.destinationType === 'region') {
+      if (userData.destinationRegion && hotel.region && !hotel.region.toLowerCase().includes(userData.destinationRegion.toLowerCase()) && !userData.destinationRegion.toLowerCase().includes(hotel.region.toLowerCase())) {
+        warnings.push(`Situé en ${hotel.region} (Vous vouliez : ${userData.destinationRegion})`);
+      }
+    } else if (userData.destinationType === 'world' && userData.worldDestinationCountry) {
+      if (hotel.country && !hotel.country.toLowerCase().includes(userData.worldDestinationCountry.toLowerCase())) {
+        // Soft match or keep without harsh penalty
+      }
     }
 
     // 1. Stay Type Check
