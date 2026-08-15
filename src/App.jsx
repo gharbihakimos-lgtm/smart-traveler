@@ -1052,23 +1052,26 @@ function App() {
         </div>
       )}
 
-      <div className="card">
-        {step === -1 && <Intro setStep={setStep} />}
-        {step === 0 && <StepChat setStep={setStep} setData={setData} />}
-        {step > 0 && steps[step]}
-        
-        {step > 0 && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
-            <button className="btn-secondary btn" onClick={prevStep} style={{padding: '0.75rem 1.25rem'}}>
-              <ArrowLeft size={18} /> Retour
-            </button>
-            
-            <button className="btn" onClick={nextStep} style={{padding: '0.75rem 1.5rem'}}>
-              {step === TOTAL_STEPS ? 'Trouver mon séjour' : 'Suivant'} {step !== TOTAL_STEPS && <ArrowRight size={18} />}
-            </button>
-          </div>
-        )}
-      </div>
+      {step === -1 ? (
+        <Intro setStep={setStep} setData={setData} />
+      ) : (
+        <div className="card">
+          {step === 0 && <StepChat setStep={setStep} setData={setData} />}
+          {step > 0 && steps[step]}
+          
+          {step > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '3rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
+              <button className="btn-secondary btn" onClick={prevStep} style={{padding: '0.75rem 1.25rem'}}>
+                <ArrowLeft size={18} /> Retour
+              </button>
+              
+              <button className="btn" onClick={nextStep} style={{padding: '0.75rem 1.5rem'}}>
+                {step === TOTAL_STEPS ? 'Trouver mon séjour' : 'Suivant'} {step !== TOTAL_STEPS && <ArrowRight size={18} />}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       <footer style={{
         textAlign: 'center', padding: '2rem', marginTop: '2rem',
